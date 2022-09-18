@@ -16,7 +16,7 @@ export const voiceStateUpdateHandler = async (
     return connections;
   }
 
-  const newConnections = [...connections];
+  let newConnections = [...connections];
   const member = newState.member;
   const id = member.id;
   const guildID = newState.guild.id;
@@ -52,33 +52,37 @@ export const voiceStateUpdateHandler = async (
 
   // Disconnection
   if (!newState.channelId) {
-    return newConnections.filter(async (connection) => {
-      if (connection.memberID !== newState.member?.id) {
+    let hoursSpent;
+    newConnections = newConnections.filter((connection) => {
+      if (connection.memberID !== id) {
         return true;
       }
 
       const MILISECONDS_TO_HOURS = 2.77777778e-7;
-      const hoursSpent =
-        (Date.now() - connection.startTime) * MILISECONDS_TO_HOURS;
-
-      await prisma.guildMember.update({
-        where: { guildID_userID: { guildID, userID: id } },
-        data: {
-          hoursActive: {
-            increment: hoursSpent,
-          },
-        },
-      });
+      const MILISECONDS_TO_SECONDS = 1e-3;
+      hoursSpent = (Date.now() - connection.startTime) * MILISECONDS_TO_HOURS;
 
       console.log(
-        `${newState.member.nickname} left after: ${
-          hoursSpent / MILISECONDS_TO_HOURS / 1000
+        `${newState.member?.nickname} left after: ${
+          (hoursSpent / MILISECONDS_TO_HOURS) * MILISECONDS_TO_SECONDS
         } seconds`
       );
 
       return false;
     });
+
+    await prisma.guildMember.update({
+      where: { guildID_userID: { guildID, userID: id } },
+      data: {
+        hoursActive: {
+          increment: hoursSpent,
+        },
+      },
+    });
+
+    return newConnections;
   }
 
+  // never reached
   return connections;
 };
