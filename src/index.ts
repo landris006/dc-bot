@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { Client, GatewayIntentBits } from 'discord.js';
+import { PrismaClient } from '@prisma/client';
 import {
   voiceStateUpdateHandler,
   Connection,
@@ -14,13 +15,19 @@ const client = new Client({
   ],
 });
 
+export const prisma = new PrismaClient();
+
 client.once('ready', () => {
   console.log(`Logged in as ${client.user?.tag}!`);
 });
 
 let connections: Connection[] = [];
-client.on('voiceStateUpdate', (oldState, newState) => {
-  connections = voiceStateUpdateHandler(oldState, newState, connections);
+client.on('voiceStateUpdate', async (oldState, newState) => {
+  if (oldState.channelId && newState.channelId) {
+    return;
+  }
+
+  connections = await voiceStateUpdateHandler(oldState, newState, connections);
   console.log(connections);
 });
 

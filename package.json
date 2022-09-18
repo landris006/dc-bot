@@ -1,14 +1,12 @@
 {
   "dependencies": {
+    "@prisma/client": "^4.3.1",
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.2"
   },
   "name": "dc-watcher",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {
-    "prisma": "^4.3.1"
-  },
   "scripts": {
     "start": "nodemon dist/index.js",
     "watch": "tsc --watch"

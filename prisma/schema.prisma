@@ -1,11 +1,37 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model User {
+  id       String @id
+  username String
+
+  guildMembers GuildMember[]
+}
+
+model Guild {
+  id   String @id
+  name String
+
+  guildMembers GuildMember[]
+}
+
+model GuildMember {
+  guildID     String
+  userID      String
+  joinedAt    DateTime
+  nickname    String?
+  hoursActive Float    @default(0)
+
+  user  User  @relation(fields: [userID], references: [id])
+  guild Guild @relation(fields: [guildID], references: [id])
+
+  @@id([guildID, userID])
 }
