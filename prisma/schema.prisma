@@ -38,8 +38,9 @@ model GuildMember {
 }
 
 model VoiceChannel {
-  id   String @id
-  name String
+  id          String @id
+  name        String
+  connections Int    @default(0)
 
   guildID String
   guild   Guild  @relation(fields: [guildID], references: [id])

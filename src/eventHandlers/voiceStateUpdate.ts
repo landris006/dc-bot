@@ -18,6 +18,16 @@ export namespace voiceStateUpdateHandlers {
 
     const userID = member.id;
     const guildID = newState.guild.id;
+    const channel = newState.channel;
+    if (!channel) {
+      return;
+    }
+
+    await prisma.voiceChannel.upsert({
+      where: { id: channel.id },
+      update: { connections: { increment: 1 } },
+      create: { id: channel.id, name: channel.name, guildID, connections: 1 },
+    });
 
     connections.set(userID, {
       startTime: Date.now(),
