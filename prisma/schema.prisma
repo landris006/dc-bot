@@ -20,7 +20,8 @@ model Guild {
   id   String @id
   name String
 
-  guildMembers GuildMember[]
+  guildMembers  GuildMember[]
+  voiceChannels VoiceChannel[]
 }
 
 model GuildMember {
@@ -34,4 +35,12 @@ model GuildMember {
   guild Guild @relation(fields: [guildID], references: [id])
 
   @@id([guildID, userID])
+}
+
+model VoiceChannel {
+  id   String @id
+  name String
+
+  guildID String
+  guild   Guild  @relation(fields: [guildID], references: [id])
 }
