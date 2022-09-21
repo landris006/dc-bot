@@ -3,86 +3,77 @@ import { prisma } from '../index';
 
 export interface Connection {
   startTime: number;
-  memberID: string;
   guildID: string;
 }
 
 export const voiceStateUpdateHandler = async (
   oldState: VoiceState,
   newState: VoiceState,
-  connections: Connection[]
-): Promise<Connection[]> => {
+  connections: Map<string, Connection>
+): Promise<void> => {
   if (!newState.member) {
-    return connections;
+    return;
   }
 
-  let newConnections = [...connections];
   const member = newState.member;
-  const id = member.id;
+  const userID = member.id;
   const guildID = newState.guild.id;
 
   // Connection
   if (!oldState.channelId) {
-    newConnections.push({
+    connections.set(userID, {
       startTime: Date.now(),
-      memberID: id,
       guildID,
     });
 
     const username = member.user.username;
     await prisma.user.upsert({
-      where: { id },
+      where: { id: userID },
       update: { username },
-      create: { id, username },
+      create: { id: userID, username },
     });
 
     await prisma.guildMember.upsert({
-      where: { guildID_userID: { guildID, userID: id } },
+      where: { guildID_userID: { guildID, userID: userID } },
       update: { nickname: member.nickname },
       create: {
         guildID,
-        userID: id,
+        userID,
         joinedAt: member.joinedAt ?? Date(),
         nickname: member.nickname,
       },
     });
 
-    return newConnections;
+    return;
   }
 
   // Disconnection
   if (!newState.channelId) {
-    let hoursSpent;
-    newConnections = newConnections.filter((connection) => {
-      if (connection.memberID !== id) {
-        return true;
-      }
+    const connection = connections.get(userID);
+    if (!connection) {
+      return;
+    }
+    connections.delete(userID);
 
-      const MILISECONDS_TO_HOURS = 2.77777778e-7;
-      const MILISECONDS_TO_SECONDS = 1e-3;
-      hoursSpent = (Date.now() - connection.startTime) * MILISECONDS_TO_HOURS;
+    const MILISECONDS_TO_HOURS = 2.77777778e-7;
+    const MILISECONDS_TO_SECONDS = 1e-3;
 
-      console.log(
-        `${newState.member?.nickname} left after: ${
-          (hoursSpent / MILISECONDS_TO_HOURS) * MILISECONDS_TO_SECONDS
-        } seconds`
-      );
+    const hoursSpent =
+      (Date.now() - connection.startTime) * MILISECONDS_TO_HOURS;
 
-      return false;
-    });
+    console.log(
+      `${newState.member?.nickname} left after: ${
+        (hoursSpent / MILISECONDS_TO_HOURS) * MILISECONDS_TO_SECONDS
+      } seconds`
+    );
 
     await prisma.guildMember.update({
-      where: { guildID_userID: { guildID, userID: id } },
+      where: { guildID_userID: { guildID, userID: userID } },
       data: {
         hoursActive: {
           increment: hoursSpent,
         },
       },
     });
-
-    return newConnections;
   }
-
-  // never reached
-  return connections;
 };

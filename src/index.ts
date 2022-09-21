@@ -21,14 +21,13 @@ client.once('ready', () => {
   console.log(`Logged in as ${client.user?.tag}!`);
 });
 
-let connections: Connection[] = [];
+const connections = new Map<string, Connection>();
 client.on('voiceStateUpdate', async (oldState, newState) => {
   if (oldState.channelId && newState.channelId) {
     return;
   }
 
-  connections = await voiceStateUpdateHandler(oldState, newState, connections);
-  console.log(connections);
+  await voiceStateUpdateHandler(oldState, newState, connections);
 });
 
 client.login(process.env.TOKEN);
