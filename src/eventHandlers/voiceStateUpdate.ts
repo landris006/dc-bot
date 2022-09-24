@@ -74,7 +74,7 @@ export namespace voiceStateUpdateHandlers {
       } seconds`
     );
 
-    await prisma.guildMember.update({
+    const updatedMember = await prisma.guildMember.update({
       where: { guildID_userID: { guildID, userID: userID } },
       data: {
         hoursActive: {
@@ -82,6 +82,8 @@ export namespace voiceStateUpdateHandlers {
         },
       },
     });
+
+    console.log(member.roles);
   };
 
   export const handleChannelChange = async (newState: VoiceState) => {
