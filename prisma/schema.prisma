@@ -25,11 +25,12 @@ model Guild {
 }
 
 model GuildMember {
-  guildID     String
-  userID      String
-  joinedAt    DateTime
-  nickname    String?
-  hoursActive Float    @default(0)
+  guildID      String
+  userID       String
+  joinedAt     DateTime
+  nickname     String?
+  hoursActive  Float    @default(0)
+  messagesSent Int      @default(0)
 
   user  User  @relation(fields: [userID], references: [id])
   guild Guild @relation(fields: [guildID], references: [id])

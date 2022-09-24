@@ -1,5 +1,6 @@
 import { VoiceState } from 'discord.js';
 import { prisma } from '../index';
+import { upsertMember } from '../utils/upsertMember';
 
 export interface Connection {
   startTime: number;
@@ -35,21 +36,12 @@ export namespace voiceStateUpdateHandlers {
     });
 
     const username = member.user.username;
-    await prisma.user.upsert({
-      where: { id: userID },
-      update: { username },
-      create: { id: userID, username },
-    });
-
-    await prisma.guildMember.upsert({
-      where: { guildID_userID: { guildID, userID: userID } },
-      update: { nickname: member.nickname },
-      create: {
-        guildID,
-        userID,
-        joinedAt: member.joinedAt ?? Date(),
-        nickname: member.nickname,
-      },
+    await upsertMember({
+      userID,
+      username,
+      guildID,
+      nickname: member.nickname,
+      joinedAt: member.joinedAt,
     });
   };
 

@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { Connection } from './eventHandlers/voiceStateUpdate';
 import { voiceStateUpdateHandlers } from './eventHandlers/voiceStateUpdate';
 import { slashCommandInteractionHandlers } from './eventHandlers/slashCommandHandler';
+import { upsertMember } from './utils/upsertMember';
 import env from 'dotenv';
 env.config();
 
@@ -10,6 +11,7 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildVoiceStates,
   ],
 });
@@ -32,7 +34,11 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     return;
   }
 
-  if (oldState.channelId && newState.channelId) {
+  if (
+    oldState.channelId &&
+    newState.channelId &&
+    oldState.channelId !== newState.channelId
+  ) {
     await voiceStateUpdateHandlers.handleChannelChange(newState);
     return;
   }
@@ -51,6 +57,33 @@ client.on('interactionCreate', async (interaction) => {
 
   await slashCommandInteractionHandlers[commandName as keyof typeof commands](
     interaction
+  );
+});
+
+client.on('messageCreate', async (message) => {
+  const guildID = message.guild?.id;
+  const member = message.member;
+
+  if (!member || !guildID) {
+    return;
+  }
+
+  const username = member.user.username;
+  const userID = member.id;
+
+  await upsertMember(
+    {
+      userID,
+      username,
+      guildID,
+      nickname: member.nickname,
+      joinedAt: member.joinedAt,
+    },
+    {
+      messagesSent: {
+        increment: 1,
+      },
+    }
   );
 });
 
