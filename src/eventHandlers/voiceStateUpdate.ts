@@ -41,7 +41,7 @@ export namespace voiceStateUpdateHandlers {
       create: { id: userID, username },
     });
 
-    return prisma.guildMember.upsert({
+    await prisma.guildMember.upsert({
       where: { guildID_userID: { guildID, userID: userID } },
       update: { nickname: member.nickname },
       create: {
@@ -82,13 +82,27 @@ export namespace voiceStateUpdateHandlers {
       } seconds`
     );
 
-    return prisma.guildMember.update({
+    await prisma.guildMember.update({
       where: { guildID_userID: { guildID, userID: userID } },
       data: {
         hoursActive: {
           increment: hoursSpent,
         },
       },
+    });
+  };
+
+  export const handleChannelChange = async (newState: VoiceState) => {
+    const guildID = newState.guild.id;
+    const channel = newState.channel;
+    if (!channel) {
+      return;
+    }
+
+    await prisma.voiceChannel.upsert({
+      where: { id: channel.id },
+      update: { connections: { increment: 1 } },
+      create: { id: channel.id, name: channel.name, guildID, connections: 1 },
     });
   };
 }

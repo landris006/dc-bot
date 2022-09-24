@@ -9,7 +9,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon dist/index.js",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "update": "node dist/utils/updateCommands.js"
   },
   "keywords": [],
   "author": "",

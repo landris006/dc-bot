@@ -1,9 +1,10 @@
-import dotenv from 'dotenv';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { PrismaClient } from '@prisma/client';
 import { Connection } from './eventHandlers/voiceStateUpdate';
 import { voiceStateUpdateHandlers } from './eventHandlers/voiceStateUpdate';
-dotenv.config();
+import { slashCommandInteractionHandlers } from './eventHandlers/slashCommandHandler';
+import env from 'dotenv';
+env.config();
 
 const client = new Client({
   intents: [
@@ -21,18 +22,36 @@ client.once('ready', () => {
 
 const connections = new Map<string, Connection>();
 client.on('voiceStateUpdate', async (oldState, newState) => {
-  if ((oldState.channelId && newState.channelId) || !newState.member) {
-    return;
-  }
-
   if (!oldState.channelId) {
     await voiceStateUpdateHandlers.handleConnection(connections, newState);
     return;
   }
 
   if (!newState.channelId) {
-    voiceStateUpdateHandlers.handleDisconnection(connections, newState);
+    await voiceStateUpdateHandlers.handleDisconnection(connections, newState);
+    return;
   }
+
+  if (oldState.channelId && newState.channelId) {
+    await voiceStateUpdateHandlers.handleChannelChange(newState);
+    return;
+  }
+});
+
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isChatInputCommand()) {
+    return;
+  }
+
+  const { commandName } = interaction;
+
+  enum commands {
+    'ping',
+  }
+
+  await slashCommandInteractionHandlers[commandName as keyof typeof commands](
+    interaction
+  );
 });
 
 client.login(process.env.TOKEN);
