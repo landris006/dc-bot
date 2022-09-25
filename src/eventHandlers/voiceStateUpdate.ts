@@ -1,4 +1,4 @@
-import { VoiceState } from 'discord.js';
+import { ColorResolvable, VoiceState } from 'discord.js';
 import { prisma } from '../index';
 import { upsertMember } from '../utils/upsertMember';
 
@@ -6,6 +6,19 @@ export interface Connection {
   startTime: number;
   guildID: string;
 }
+
+const levelToColorMap = new Map<number, ColorResolvable>([
+  [0, 'White'],
+  [1, 'Blue'],
+  [2, 'Green'],
+  [3, 'Yellow'],
+  [4, 'Orange'],
+  [5, 'Red'],
+  [6, 'Purple'],
+  [7, 'DarkVividPink'],
+  [8, 'Grey'],
+  [9, 'LuminousVividPink'],
+]);
 
 export namespace voiceStateUpdateHandlers {
   export const handleConnection = async (
@@ -82,6 +95,27 @@ export namespace voiceStateUpdateHandlers {
         },
       },
     });
+
+    const level = Math.trunc(Math.log2(updatedMember.hoursActive)) + 1;
+
+    let roleForLevel = newState.guild.roles.cache.find(
+      (role) => role.name === `Level ${level}`
+    );
+
+    if (!roleForLevel) {
+      roleForLevel = await newState.guild.roles.create({
+        name: `Level ${level}`,
+        color: levelToColorMap.get(level % 10),
+      });
+    }
+
+    await Promise.all(
+      member.roles.cache
+        .filter((role) => role.name.startsWith('Level'))
+        .map((role) => member.roles.remove(role))
+    );
+
+    await member.roles.add(roleForLevel);
   };
 
   export const handleChannelChange = async (newState: VoiceState) => {
