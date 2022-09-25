@@ -18,6 +18,10 @@ export namespace Constants {
   ]);
 
   export const HOURS_TO_LEVEL = (hoursActive: number) => {
+    if (hoursActive < 1) {
+      return 1;
+    }
+
     return Math.trunc(Math.log2(hoursActive)) + 1;
   };
 }
