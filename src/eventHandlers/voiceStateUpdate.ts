@@ -82,8 +82,6 @@ export namespace voiceStateUpdateHandlers {
         },
       },
     });
-
-    console.log(member.roles);
   };
 
   export const handleChannelChange = async (newState: VoiceState) => {

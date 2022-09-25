@@ -38,9 +38,7 @@ export namespace messageHandlers {
 
         message.channel.send({
           files: [
-            `./assets/kirei/kirei${Math.floor(
-              Math.random() * files.length + 1
-            )}.jpg`,
+            `./assets/kirei/${files[Math.floor(Math.random() * files.length)]}`,
           ],
         });
       });
