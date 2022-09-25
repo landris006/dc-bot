@@ -1,24 +1,12 @@
-import { ColorResolvable, VoiceState } from 'discord.js';
+import { VoiceState } from 'discord.js';
 import { prisma } from '../index';
 import { upsertMember } from '../utils/upsertMember';
+import { Constants } from '../utils/constants';
 
 export interface Connection {
   startTime: number;
   guildID: string;
 }
-
-const levelToColorMap = new Map<number, ColorResolvable>([
-  [0, 'White'],
-  [1, 'Blue'],
-  [2, 'Green'],
-  [3, 'Yellow'],
-  [4, 'Orange'],
-  [5, 'Red'],
-  [6, 'Purple'],
-  [7, 'DarkVividPink'],
-  [8, 'Grey'],
-  [9, 'LuminousVividPink'],
-]);
 
 export namespace voiceStateUpdateHandlers {
   export const handleConnection = async (
@@ -75,15 +63,13 @@ export namespace voiceStateUpdateHandlers {
     }
     connections.delete(userID);
 
-    const MILISECONDS_TO_HOURS = 2.77777778e-7;
-    const MILISECONDS_TO_SECONDS = 1e-3;
-
     const hoursSpent =
-      (Date.now() - connection.startTime) * MILISECONDS_TO_HOURS;
+      (Date.now() - connection.startTime) * Constants.MILISECONDS_TO_HOURS;
 
     console.log(
       `${newState.member?.nickname} left after: ${
-        (hoursSpent / MILISECONDS_TO_HOURS) * MILISECONDS_TO_SECONDS
+        (hoursSpent / Constants.MILISECONDS_TO_HOURS) *
+        Constants.MILISECONDS_TO_SECONDS
       } seconds`
     );
 
@@ -96,7 +82,7 @@ export namespace voiceStateUpdateHandlers {
       },
     });
 
-    const level = Math.trunc(Math.log2(updatedMember.hoursActive)) + 1;
+    const level = Constants.HOURS_TO_LEVEL(updatedMember.hoursActive);
 
     let roleForLevel = newState.guild.roles.cache.find(
       (role) => role.name === `Level ${level}`
@@ -105,7 +91,7 @@ export namespace voiceStateUpdateHandlers {
     if (!roleForLevel) {
       roleForLevel = await newState.guild.roles.create({
         name: `Level ${level}`,
-        color: levelToColorMap.get(level % 10),
+        color: Constants.LEVEL_TO_COLOR_MAP.get(level % 10),
       });
     }
 
