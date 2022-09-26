@@ -16,6 +16,9 @@ const commands = [
   new SlashCommandBuilder()
     .setName('ping')
     .setDescription('Replies with pong!'),
+  new SlashCommandBuilder()
+    .setName('banish')
+    .setDescription('Banishes the previous message to the Shadow Realm.'),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN!);

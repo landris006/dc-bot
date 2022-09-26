@@ -54,6 +54,7 @@ client.on('interactionCreate', async (interaction) => {
 
   enum commands {
     'ping',
+    'banish',
   }
 
   await slashCommandInteractionHandlers[commandName as keyof typeof commands](
