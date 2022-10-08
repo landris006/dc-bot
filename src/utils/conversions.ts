@@ -1,6 +1,6 @@
 import { ColorResolvable } from 'discord.js';
 
-export namespace Constants {
+export namespace Conversions {
   export const MILISECONDS_TO_HOURS = 2.77777778e-7;
   export const MILISECONDS_TO_SECONDS = 1e-3;
 
@@ -23,5 +23,13 @@ export namespace Constants {
     }
 
     return Math.trunc(Math.log2(hoursActive)) + 1;
+  };
+
+  export const LEVEL_TO_HOURS = (level: number) => {
+    if (level < 1) {
+      return 0;
+    }
+
+    return 2 ** (level - 1);
   };
 }

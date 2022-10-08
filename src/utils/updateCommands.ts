@@ -20,6 +20,11 @@ const commands = [
   new SlashCommandBuilder()
     .setName('banish')
     .setDescription('Banishes the previous message to the Shadow Realm.'),
+  new SlashCommandBuilder()
+    .setName('level')
+    .setDescription(
+      'Tells you how much more hours are needed for the next level.'
+    ),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN!);

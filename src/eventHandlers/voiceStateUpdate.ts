@@ -1,7 +1,7 @@
 import { VoiceState } from 'discord.js';
 import { prisma } from '../index';
 import { upsertMember } from '../utils/upsertMember';
-import { Constants } from '../utils/constants';
+import { Conversions } from '../utils/conversions';
 import { logger } from '../utils/logger';
 
 export interface Connection {
@@ -67,17 +67,17 @@ export namespace voiceStateUpdateHandlers {
     connections.delete(userID);
 
     const hoursSpent =
-      (Date.now() - connection.startTime) * Constants.MILISECONDS_TO_HOURS;
+      (Date.now() - connection.startTime) * Conversions.MILISECONDS_TO_HOURS;
 
     logger(
       `${newState.member?.nickname} left '${oldChannelName}' after: ${
-        (hoursSpent / Constants.MILISECONDS_TO_HOURS) *
-        Constants.MILISECONDS_TO_SECONDS
+        (hoursSpent / Conversions.MILISECONDS_TO_HOURS) *
+        Conversions.MILISECONDS_TO_SECONDS
       } seconds`
     );
 
     const updatedMember = await prisma.guildMember.update({
-      where: { guildID_userID: { guildID, userID: userID } },
+      where: { guildID_userID: { guildID, userID } },
       data: {
         hoursActive: {
           increment: hoursSpent,
@@ -85,7 +85,7 @@ export namespace voiceStateUpdateHandlers {
       },
     });
 
-    const level = Constants.HOURS_TO_LEVEL(updatedMember.hoursActive);
+    const level = Conversions.HOURS_TO_LEVEL(updatedMember.hoursActive);
 
     let roleForLevel = newState.guild.roles.cache.find(
       (role) => role.name === `Level ${level}`
@@ -94,7 +94,7 @@ export namespace voiceStateUpdateHandlers {
     if (!roleForLevel) {
       roleForLevel = await newState.guild.roles.create({
         name: `Level ${level}`,
-        color: Constants.LEVEL_TO_COLOR_MAP.get(level % 10),
+        color: Conversions.LEVEL_TO_COLOR_MAP.get(level % 10),
       });
     }
 
