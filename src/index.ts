@@ -5,6 +5,7 @@ import { voiceStateUpdateHandlers } from './eventHandlers/voiceStateUpdate';
 import { slashCommandInteractionHandlers } from './eventHandlers/slashCommandHandler';
 import env from 'dotenv';
 import { messageHandlers } from './eventHandlers/messageHandler';
+import { logger } from './utils/logger';
 env.config();
 
 const client = new Client({
@@ -20,7 +21,10 @@ const client = new Client({
 export const prisma = new PrismaClient();
 
 client.once('ready', () => {
-  console.log(`Logged in as ${client.user?.tag}!`);
+  logger(`Logged in as ${client.user?.tag}!`);
+});
+process.on('uncaughtException', (ex) => {
+  logger(ex.stack as string);
 });
 
 const connections = new Map<string, Connection>();
@@ -31,7 +35,11 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
   }
 
   if (!newState.channelId) {
-    await voiceStateUpdateHandlers.handleDisconnection(connections, newState);
+    await voiceStateUpdateHandlers.handleDisconnection(
+      connections,
+      newState,
+      oldState.channel?.name as string
+    );
     return;
   }
 
@@ -40,7 +48,10 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     newState.channelId &&
     oldState.channelId !== newState.channelId
   ) {
-    await voiceStateUpdateHandlers.handleChannelChange(newState);
+    await voiceStateUpdateHandlers.handleChannelChange(
+      newState,
+      oldState.channel?.name as string
+    );
     return;
   }
 });

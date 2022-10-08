@@ -2,6 +2,7 @@ import { VoiceState } from 'discord.js';
 import { prisma } from '../index';
 import { upsertMember } from '../utils/upsertMember';
 import { Constants } from '../utils/constants';
+import { logger } from '../utils/logger';
 
 export interface Connection {
   startTime: number;
@@ -36,19 +37,21 @@ export namespace voiceStateUpdateHandlers {
       guildID,
     });
 
-    const username = member.user.username;
     await upsertMember({
       userID,
-      username,
+      username: member.user.username,
       guildID,
       nickname: member.nickname,
       joinedAt: member.joinedAt,
     });
+
+    logger(`${member.nickname} connected to ${channel.name}`);
   };
 
   export const handleDisconnection = async (
     connections: Map<string, Connection>,
-    newState: VoiceState
+    newState: VoiceState,
+    oldChannelName: string
   ) => {
     const member = newState.member;
     if (!member) {
@@ -66,8 +69,8 @@ export namespace voiceStateUpdateHandlers {
     const hoursSpent =
       (Date.now() - connection.startTime) * Constants.MILISECONDS_TO_HOURS;
 
-    console.log(
-      `${newState.member?.nickname} left after: ${
+    logger(
+      `${newState.member?.nickname} left '${oldChannelName}' after: ${
         (hoursSpent / Constants.MILISECONDS_TO_HOURS) *
         Constants.MILISECONDS_TO_SECONDS
       } seconds`
@@ -104,7 +107,10 @@ export namespace voiceStateUpdateHandlers {
     await member.roles.add(roleForLevel);
   };
 
-  export const handleChannelChange = async (newState: VoiceState) => {
+  export const handleChannelChange = async (
+    newState: VoiceState,
+    oldChannelName: string
+  ) => {
     const guildID = newState.guild.id;
     const channel = newState.channel;
     if (!channel) {
@@ -116,5 +122,9 @@ export namespace voiceStateUpdateHandlers {
       update: { connections: { increment: 1 } },
       create: { id: channel.id, name: channel.name, guildID, connections: 1 },
     });
+
+    logger(
+      `${newState.member?.nickname} moved from '${oldChannelName}' to '${channel.name}'`
+    );
   };
 }

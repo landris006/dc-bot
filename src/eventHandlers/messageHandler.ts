@@ -31,7 +31,6 @@ export namespace messageHandlers {
 
     if (message.content.includes('yorokobe shounen')) {
       fs.readdir('./assets/kirei/', (err, files) => {
-        console.log(files);
         if (err) {
           return;
         }

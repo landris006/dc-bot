@@ -5,6 +5,7 @@ import {
   RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord.js';
 import env from 'dotenv';
+import { logger } from './logger';
 env.config();
 
 const { TOKEN, CLIENT_ID } = process.env;
@@ -26,7 +27,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN!);
 rest
   .put(Routes.applicationCommands(process.env.CLIENT_ID!), { body: commands })
   .then((data) =>
-    console.log(
+    logger(
       `Successfully registered ${
         (data as RESTPostAPIApplicationCommandsJSONBody[]).length
       } application commands.`
