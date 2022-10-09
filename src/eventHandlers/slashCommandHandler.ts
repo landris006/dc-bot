@@ -1,8 +1,16 @@
 import {
   ChannelType,
   CommandInteraction,
+  GuildMember,
   GuildTextBasedChannel,
 } from 'discord.js';
+import {
+  AudioPlayerStatus,
+  createAudioPlayer,
+  createAudioResource,
+  joinVoiceChannel,
+  NoSubscriberBehavior,
+} from '@discordjs/voice';
 import { prisma } from '../index';
 import { Conversions } from '../utils/conversions';
 
@@ -78,5 +86,40 @@ export namespace slashCommandInteractionHandlers {
         ) / 100
       } hours.`
     );
+  };
+
+  export const turtles = async (interaction: CommandInteraction) => {
+    const channelId = (interaction.member as GuildMember).voice.channelId;
+
+    if (!channelId) {
+      return interaction.reply(
+        'You must be in a voice channel for this command to work!'
+      );
+    }
+
+    const connection = joinVoiceChannel({
+      channelId,
+      guildId: interaction.guild?.id as string,
+      adapterCreator: interaction.guild?.voiceAdapterCreator!,
+    });
+
+    const player = createAudioPlayer({
+      behaviors: {
+        noSubscriber: NoSubscriberBehavior.Pause,
+      },
+    });
+    const resource = createAudioResource(
+      `${process.cwd()}/assets/sound/where-are-the-turtles.mp3`
+    );
+
+    player.play(resource);
+    connection.subscribe(player);
+
+    player.on(AudioPlayerStatus.Idle, () => {
+      player.stop();
+      connection.destroy();
+    });
+
+    return interaction.reply('Where are the turtles?');
   };
 }

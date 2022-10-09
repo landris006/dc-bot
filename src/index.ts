@@ -67,6 +67,7 @@ client.on('interactionCreate', async (interaction) => {
     'ping',
     'banish',
     'level',
+    'turtles',
   }
 
   await slashCommandInteractionHandlers[commandName as keyof typeof commands](

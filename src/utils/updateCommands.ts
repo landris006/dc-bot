@@ -25,6 +25,9 @@ const commands = [
     .setDescription(
       'Tells you how much more hours are needed for the next level.'
     ),
+  new SlashCommandBuilder()
+    .setName('turtles')
+    .setDescription('WHERE ARE THE TURTLES?'),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN!);
