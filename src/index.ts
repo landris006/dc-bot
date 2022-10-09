@@ -8,6 +8,8 @@ import { messageHandlers } from './eventHandlers/messageHandler';
 import { logger } from './utils/logger';
 env.config();
 
+export const prisma = new PrismaClient();
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -18,8 +20,6 @@ const client = new Client({
   ],
 });
 
-export const prisma = new PrismaClient();
-
 client.once('ready', () => {
   logger(`Logged in as ${client.user?.tag}!`);
 });
@@ -29,6 +29,10 @@ process.on('uncaughtException', (ex) => {
 
 const connections = new Map<string, Connection>();
 client.on('voiceStateUpdate', async (oldState, newState) => {
+  if (newState.member?.user.bot) {
+    return;
+  }
+
   if (!oldState.channelId) {
     await voiceStateUpdateHandlers.handleConnection(connections, newState);
     return;
@@ -76,6 +80,10 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on('messageCreate', async (message) => {
+  if (message.member?.user.bot) {
+    return;
+  }
+
   messageHandlers.messageHandler(message);
 });
 
