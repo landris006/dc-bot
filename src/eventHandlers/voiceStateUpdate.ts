@@ -45,7 +45,7 @@ export namespace voiceStateUpdateHandlers {
       joinedAt: member.joinedAt,
     });
 
-    logger(`${member.nickname} connected to ${channel.name}`);
+    logger(`${member.nickname} connected to ''${channel.name}'`);
   };
 
   export const handleDisconnection = async (
@@ -69,7 +69,7 @@ export namespace voiceStateUpdateHandlers {
     const hoursSpent =
       (Date.now() - connection.startTime) * Conversions.MILISECONDS_TO_HOURS;
 
-    logger(
+    await logger(
       `${newState.member?.nickname} left '${oldChannelName}' after: ${
         (hoursSpent / Conversions.MILISECONDS_TO_HOURS) *
         Conversions.MILISECONDS_TO_SECONDS

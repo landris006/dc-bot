@@ -13,13 +13,25 @@ import {
 } from '@discordjs/voice';
 import { prisma } from '../index';
 import { Conversions } from '../utils/conversions';
+import { logger } from '../utils/logger';
 
 export namespace slashCommandInteractionHandlers {
-  export const ping = (interaction: CommandInteraction) => {
+  export const ping = async (interaction: CommandInteraction) => {
+    await logger(
+      `${
+        (interaction.member as GuildMember).nickname
+      } used the '/ping' command!`
+    );
     return interaction.reply('Pong!');
   };
 
   export const banish = async (interaction: CommandInteraction) => {
+    await logger(
+      `${
+        (interaction.member as GuildMember).nickname
+      } used the '/banish' command!`
+    );
+
     const lastMessage = (
       await interaction.channel?.messages.fetch({ limit: 1 })
     )?.first();
@@ -60,6 +72,12 @@ export namespace slashCommandInteractionHandlers {
   };
 
   export const level = async (interaction: CommandInteraction) => {
+    await logger(
+      `${
+        (interaction.member as GuildMember).nickname
+      } used the '/level' command!`
+    );
+
     const guildID = interaction.guild?.id as string;
     const userID = interaction.user.id;
 
@@ -89,6 +107,12 @@ export namespace slashCommandInteractionHandlers {
   };
 
   export const turtles = async (interaction: CommandInteraction) => {
+    await logger(
+      `${
+        (interaction.member as GuildMember).nickname
+      } used the '/turtles' command!`
+    );
+
     const channelId = (interaction.member as GuildMember).voice.channelId;
 
     if (!channelId) {
