@@ -77,6 +77,10 @@ client.on('interactionCreate', async (interaction) => {
   await slashCommandInteractionHandlers[commandName as keyof typeof commands](
     interaction
   );
+
+  setTimeout(() => {
+    interaction.deleteReply();
+  }, 10000);
 });
 
 client.on('messageCreate', async (message) => {
