@@ -45,7 +45,7 @@ export namespace voiceStateUpdateHandlers {
       joinedAt: member.joinedAt,
     });
 
-    logger(`${member.nickname} connected to ''${channel.name}'`);
+    logger(`${member.nickname} connected to '${channel.name}'`);
   };
 
   export const handleDisconnection = async (
