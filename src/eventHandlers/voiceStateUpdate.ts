@@ -1,15 +1,62 @@
-import { VoiceState } from 'discord.js';
-import { prisma } from '../index';
+import { SelectMenuOptionBuilder, VoiceState } from 'discord.js';
+import { prisma, State } from '../index';
 import { upsertMember } from '../utils/upsertMember';
 import { Conversions } from '../utils/conversions';
 import { logger } from '../utils/logger';
+import {
+  AudioPlayerStatus,
+  createAudioPlayer,
+  createAudioResource,
+  getVoiceConnection,
+  NoSubscriberBehavior,
+} from '@discordjs/voice';
 
 export interface Connection {
   startTime: number;
   guildID: string;
 }
 
-export namespace voiceStateUpdateHandlers {
+export namespace VoiceStateUpdateHandlers {
+  export const handleMinecraft = (
+    oldState: VoiceState,
+    newState: VoiceState,
+    state: State
+  ) => {
+    const connection = getVoiceConnection(newState.guild.id, 'client');
+
+    if (!state.currentConnection || !connection) {
+      return;
+    }
+
+    const player = createAudioPlayer({
+      behaviors: {
+        noSubscriber: NoSubscriberBehavior.Pause,
+      },
+    });
+    const resource = createAudioResource(
+      `${process.cwd()}/assets/sound/get-out-of-my-room-im-playing-minecraft.mp3`
+    );
+
+    player.play(resource);
+    connection.subscribe(player);
+
+    player.on(AudioPlayerStatus.Idle, () => {
+      player.stop();
+
+      newState.channel?.members.map((member) => {
+        if (member.user.bot) {
+          return;
+        }
+
+        if (!oldState) {
+          return member.voice.disconnect();
+        }
+
+        return member.voice.setChannel(oldState.channelId);
+      });
+    });
+  };
+
   export const handleConnection = async (
     connections: Map<string, Connection>,
     newState: VoiceState

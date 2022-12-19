@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { upsertMember } from '../utils/upsertMember';
 import fs from 'fs';
 
-export namespace messageHandlers {
+export namespace MessageHandlers {
   export const messageHandler = async (message: Message) => {
     const guildID = message.guild?.id;
     const member = message.member;

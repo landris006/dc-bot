@@ -1,5 +1,6 @@
 import {
   ChannelType,
+  Collection,
   CommandInteraction,
   GuildMember,
   GuildTextBasedChannel,
@@ -13,25 +14,14 @@ import {
 } from '@discordjs/voice';
 import { prisma } from '../index';
 import { Conversions } from '../utils/conversions';
-import { logger } from '../utils/logger';
+import { State } from '../index';
 
-export namespace slashCommandInteractionHandlers {
+export namespace SlashCommandInteractionHandlers {
   export const ping = async (interaction: CommandInteraction) => {
-    await logger(
-      `${
-        (interaction.member as GuildMember).nickname
-      } used the '/ping' command!`
-    );
     return interaction.reply('Pong!');
   };
 
   export const banish = async (interaction: CommandInteraction) => {
-    await logger(
-      `${
-        (interaction.member as GuildMember).nickname
-      } used the '/banish' command!`
-    );
-
     const lastMessage = (
       await interaction.channel?.messages.fetch({ limit: 1 })
     )?.first();
@@ -72,12 +62,6 @@ export namespace slashCommandInteractionHandlers {
   };
 
   export const level = async (interaction: CommandInteraction) => {
-    await logger(
-      `${
-        (interaction.member as GuildMember).nickname
-      } used the '/level' command!`
-    );
-
     const guildID = interaction.guild?.id as string;
     const userID = interaction.user.id;
 
@@ -106,13 +90,10 @@ export namespace slashCommandInteractionHandlers {
     );
   };
 
-  export const turtles = async (interaction: CommandInteraction) => {
-    await logger(
-      `${
-        (interaction.member as GuildMember).nickname
-      } used the '/turtles' command!`
-    );
-
+  export const turtles = async (
+    interaction: CommandInteraction,
+    state: State
+  ) => {
     const channelId = (interaction.member as GuildMember).voice.channelId;
 
     if (!channelId) {
@@ -121,10 +102,13 @@ export namespace slashCommandInteractionHandlers {
       );
     }
 
+    state.isPlayingMinecraft = null;
+
     const connection = joinVoiceChannel({
       channelId,
       guildId: interaction.guild?.id as string,
       adapterCreator: interaction.guild?.voiceAdapterCreator!,
+      group: 'client',
     });
 
     const player = createAudioPlayer({
@@ -142,8 +126,53 @@ export namespace slashCommandInteractionHandlers {
     player.on(AudioPlayerStatus.Idle, () => {
       player.stop();
       connection.destroy();
+      state.currentConnection = null;
     });
 
     return interaction.reply('Where are the turtles?');
+  };
+
+  export const minecraft = async (
+    interaction: CommandInteraction,
+    state: State
+  ) => {
+    if (state.isPlayingMinecraft) {
+      return interaction.reply('Already playing Minecraft!');
+    }
+
+    const avaliableChannels = interaction.guild?.channels.cache.filter(
+      (channel) =>
+        (channel.members as Collection<string, GuildMember>).size === 0 &&
+        !channel.name.toLowerCase().includes('afk')
+    );
+
+    if (!avaliableChannels?.size) {
+      return interaction.reply('No empty channels available!');
+    }
+
+    const channelToJoin = avaliableChannels.first()!;
+    joinVoiceChannel({
+      channelId: channelToJoin.id as string,
+      guildId: interaction.guild?.id as string,
+      group: 'client',
+      adapterCreator: interaction.guild?.voiceAdapterCreator!,
+    });
+
+    state.isPlayingMinecraft = channelToJoin.id;
+
+    interaction.reply(`Started playing Minecrat in '${channelToJoin.name}'`);
+  };
+
+  export const leave = async (
+    interaction: CommandInteraction,
+    state: State
+  ) => {
+    if (!state.currentConnection) {
+      return interaction.reply('Not connected to any voice channel!');
+    }
+
+    state.currentConnection.disconnect();
+
+    interaction.reply('Left voice channel!');
   };
 }

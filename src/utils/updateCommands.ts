@@ -28,6 +28,12 @@ const commands = [
   new SlashCommandBuilder()
     .setName('turtles')
     .setDescription('WHERE ARE THE TURTLES?'),
+  new SlashCommandBuilder()
+    .setName('minecraft')
+    .setDescription('Starts playing Minecraft in an empty voice channel.'),
+  new SlashCommandBuilder()
+    .setName('leave')
+    .setDescription('Leaves any voice channel it is currently in.'),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN!);
