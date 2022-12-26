@@ -1,12 +1,11 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  relationMode         = "prisma"
 }
 
 model User {
@@ -33,7 +32,9 @@ model GuildMember {
   messagesSent Int      @default(0)
 
   user  User  @relation(fields: [userID], references: [id])
+  @@index([userID])
   guild Guild @relation(fields: [guildID], references: [id])
+  @@index([guildID])
 
   @@id([guildID, userID])
 }
@@ -44,5 +45,7 @@ model VoiceChannel {
   connections Int    @default(0)
 
   guildID String
+
   guild   Guild  @relation(fields: [guildID], references: [id])
+  @@index([guildID])
 }
