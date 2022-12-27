@@ -6,11 +6,12 @@ export const upsertMember = async (
     username: string;
     guildID: string;
     nickname: string | null;
+    avatarURL: string | null;
     joinedAt: Date | null;
   },
   customMemberUpdate?: object
 ) => {
-  const { userID, username, guildID, nickname, joinedAt } = data;
+  const { userID, username, guildID, nickname, avatarURL, joinedAt } = data;
   await prisma.user.upsert({
     where: { id: userID },
     update: { username },
@@ -19,12 +20,17 @@ export const upsertMember = async (
 
   await prisma.guildMember.upsert({
     where: { guildID_userID: { guildID, userID: userID } },
-    update: { nickname: nickname ?? username, ...customMemberUpdate },
+    update: {
+      nickname: nickname ?? username,
+      avatarURL,
+      ...customMemberUpdate,
+    },
     create: {
       guildID,
       userID,
       joinedAt: joinedAt ?? Date(),
       nickname: nickname ?? username,
+      avatarURL,
     },
   });
 };

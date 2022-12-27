@@ -28,6 +28,7 @@ model GuildMember {
   userID       String
   joinedAt     DateTime
   nickname     String?
+  avatarURL    String?
   hoursActive  Float    @default(0)
   messagesSent Int      @default(0)
 

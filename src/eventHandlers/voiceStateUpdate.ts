@@ -89,6 +89,7 @@ export namespace VoiceStateUpdateHandlers {
       username: member.user.username,
       guildID,
       nickname: member.nickname,
+      avatarURL: member.user.avatarURL(),
       joinedAt: member.joinedAt,
     });
 

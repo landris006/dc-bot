@@ -21,6 +21,7 @@ export namespace MessageHandlers {
         guildID,
         nickname: member.nickname,
         joinedAt: member.joinedAt,
+        avatarURL: member.user.avatarURL(),
       },
       {
         messagesSent: {
