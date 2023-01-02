@@ -14,15 +14,14 @@ export const upsertMember = async (
   const { userID, username, guildID, nickname, avatarURL, joinedAt } = data;
   await prisma.user.upsert({
     where: { id: userID },
-    update: { username },
-    create: { id: userID, username },
+    update: { username, avatarURL },
+    create: { id: userID, username, avatarURL },
   });
 
   await prisma.guildMember.upsert({
     where: { guildID_userID: { guildID, userID: userID } },
     update: {
       nickname: nickname ?? username,
-      avatarURL,
       ...customMemberUpdate,
     },
     create: {
@@ -30,7 +29,6 @@ export const upsertMember = async (
       userID,
       joinedAt: joinedAt ?? Date(),
       nickname: nickname ?? username,
-      avatarURL,
     },
   });
 };

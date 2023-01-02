@@ -12,6 +12,7 @@ import { SlashCommandInteractionHandlers } from './eventHandlers/slashCommandHan
 import env from 'dotenv';
 import { MessageHandlers } from './eventHandlers/messageHandler';
 import { logger } from './utils/logger';
+import { upsertMember } from './utils/upsertMember';
 env.config();
 
 export const prisma = new PrismaClient();
@@ -27,11 +28,47 @@ const client = new Client({
 });
 
 client.once('ready', () => {
-  logger(`Logged in as ${client.user?.tag}!`);
   client.user?.setActivity({
     name: 'with your mom',
     type: ActivityType.Playing,
   });
+
+  Promise.all(
+    client.guilds.cache.map(async (guild) => {
+      const iconURL = guild.iconURL();
+
+      const members = await guild.members.fetch();
+      await Promise.all(
+        members.map((member) => {
+          if (member.user.bot) {
+            return;
+          }
+
+          return upsertMember({
+            guildID: guild.id,
+            userID: member.user.id,
+            username: member.user.username,
+            nickname: member.nickname,
+            avatarURL: member.user.avatarURL(),
+            joinedAt: member.joinedAt,
+          });
+        })
+      );
+
+      return prisma.guild.upsert({
+        where: { id: guild.id },
+        update: { name: guild.name, iconURL },
+        create: {
+          id: guild.id,
+          name: guild.name,
+          iconURL,
+          createdAt: guild.createdAt,
+        },
+      });
+    })
+  );
+
+  logger(`Logged in as ${client.user?.tag}!`);
 });
 
 process.on('uncaughtException', (ex) => {

@@ -1,23 +1,26 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  relationMode         = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
-  id       String @id
-  username String
+  id        String  @id
+  username  String
+  avatarURL String?
 
   guildMembers GuildMember[]
 }
 
 model Guild {
-  id   String @id
-  name String
+  id        String   @id
+  name      String
+  createdAt DateTime @default(now())
+  iconURL   String?
 
   guildMembers  GuildMember[]
   voiceChannels VoiceChannel[]
@@ -28,16 +31,15 @@ model GuildMember {
   userID       String
   joinedAt     DateTime
   nickname     String?
-  avatarURL    String?
   hoursActive  Float    @default(0)
   messagesSent Int      @default(0)
 
   user  User  @relation(fields: [userID], references: [id])
-  @@index([userID])
   guild Guild @relation(fields: [guildID], references: [id])
-  @@index([guildID])
 
   @@id([guildID, userID])
+  @@index([userID])
+  @@index([guildID])
 }
 
 model VoiceChannel {
@@ -47,6 +49,7 @@ model VoiceChannel {
 
   guildID String
 
-  guild   Guild  @relation(fields: [guildID], references: [id])
+  guild Guild @relation(fields: [guildID], references: [id])
+
   @@index([guildID])
 }
