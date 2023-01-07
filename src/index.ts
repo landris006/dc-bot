@@ -147,15 +147,15 @@ client.on('interactionCreate', async (interaction) => {
     return;
   }
 
-  const commandName = interaction.commandName as keyof typeof commands;
-  enum commands {
-    'ping',
-    'banish',
-    'level',
-    'turtles',
-    'minecraft',
-    'leave',
-  }
+  const commandName = interaction.commandName as Commands;
+
+  type Commands =
+    | 'ping'
+    | 'banish'
+    | 'level'
+    | 'turtles'
+    | 'minecraft'
+    | 'leave';
 
   await logger(
     `${
