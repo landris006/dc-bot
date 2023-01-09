@@ -5,9 +5,15 @@ export const logger = async (message: string) => {
   const logFile = files.find((file) => file === '.log');
 
   const log = `[${new Date().toLocaleString()}]
-    ${message}`;
+  ${message}`;
 
   console.log(log);
+
+  const { LOGGING } = process.env;
+
+  if (LOGGING !== '1') {
+    return;
+  }
 
   if (!logFile) {
     return fs.writeFile('.log', `${log}\n`);
