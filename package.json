@@ -12,16 +12,18 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon dist/index.js\"",
-    "start": "tsc && node dist/index.js",
+    "start": "node dist/index.js",
     "watch": "tsc --watch",
-    "update": "tsc && node dist/utils/updateCommands.js",
-    "build": "etsc"
+    "update": "node dist/utils/updateCommands.js",
+    "build": "tsc && prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "concurrently": "^7.6.0"
+    "concurrently": "^7.6.0",
+    "prisma": "^4.8.1",
+    "typescript": "^4.9.4"
   }
 }
