@@ -12,9 +12,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon dist/index.js\"",
-    "start": "node dist/index.js",
+    "start": "tsc && node dist/index.js",
     "watch": "tsc --watch",
-    "update": "node dist/utils/updateCommands.js"
+    "update": "tsc && node dist/utils/updateCommands.js",
+    "build": "etsc"
   },
   "keywords": [],
   "author": "",
