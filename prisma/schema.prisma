@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  relationMode = "foreignKeys"
 }
 
 model User {
@@ -22,34 +22,61 @@ model Guild {
   createdAt DateTime @default(now())
   iconURL   String?
 
-  guildMembers  GuildMember[]
-  voiceChannels VoiceChannel[]
+  guildMembers   GuildMember[]
+  voiceChannels  VoiceChannel[]
+  MessageChannel MessageChannel[]
 }
 
 model GuildMember {
-  guildID      String
-  userID       String
-  joinedAt     DateTime
-  nickname     String?
-  hoursActive  Float    @default(0)
-  messagesSent Int      @default(0)
+  id       String   @id @default(uuid())
+  guildID  String
+  userID   String
+  joinedAt DateTime
+  nickname String?
 
-  user  User  @relation(fields: [userID], references: [id])
-  guild Guild @relation(fields: [guildID], references: [id])
+  user       User         @relation(fields: [userID], references: [id])
+  guild      Guild        @relation(fields: [guildID], references: [id])
+  Connection Connection[]
+  Message    Message[]
 
-  @@id([guildID, userID])
-  @@index([userID])
-  @@index([guildID])
+  @@unique([guildID, userID])
 }
 
 model VoiceChannel {
-  id          String @id
-  name        String
-  connections Int    @default(0)
-
+  id      String @id
+  name    String
   guildID String
 
-  guild Guild @relation(fields: [guildID], references: [id])
+  guild      Guild        @relation(fields: [guildID], references: [id])
+  Connection Connection[]
+}
 
-  @@index([guildID])
+model Connection {
+  id             String    @id @default(uuid())
+  guildMemberID  String
+  voiceChannelID String
+  startTime      DateTime  @default(now())
+  endTime        DateTime?
+
+  voiceChannel VoiceChannel @relation(fields: [voiceChannelID], references: [id])
+  guildMember  GuildMember  @relation(fields: [guildMemberID], references: [id])
+}
+
+model MessageChannel {
+  id      String @id
+  name    String
+  guildID String
+
+  guild   Guild     @relation(fields: [guildID], references: [id])
+  Message Message[]
+}
+
+model Message {
+  id               String   @id @default(uuid())
+  messageChannelID String
+  guildMemberID    String
+  sentAt           DateTime @default(now())
+
+  messageChannel MessageChannel @relation(fields: [messageChannelID], references: [id])
+  guildMember    GuildMember    @relation(fields: [guildMemberID], references: [id])
 }
