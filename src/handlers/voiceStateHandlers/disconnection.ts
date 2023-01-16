@@ -10,8 +10,6 @@ export const disconnection = async (
   const member = oldState.member;
   const channel = oldState.channel;
   if (!member || !channel) {
-    console.log('no member or channel');
-
     return;
   }
 
@@ -19,8 +17,6 @@ export const disconnection = async (
     where: { guildID: oldState.guild.id, userID: member.user.id },
   });
   if (!guildMember) {
-    console.log('no guild member');
-
     return;
   }
 
