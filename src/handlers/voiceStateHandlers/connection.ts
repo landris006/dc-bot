@@ -23,5 +23,5 @@ export const connection = async (newState: VoiceState) => {
     },
   });
 
-  logger(`${member.nickname} connected to '${channel.name}'`);
+  await logger(`${member.nickname} connected to '${channel.name}'`);
 };

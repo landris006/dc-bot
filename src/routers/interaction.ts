@@ -28,6 +28,7 @@ export const interactionRouer = async (interaction: Interaction<CacheType>) => {
     } used the '/${commandName}' command!`
   );
 
+  // TODO: dynamically import commands
   switch (commandName) {
     case 'ping':
       await ping(interaction);
