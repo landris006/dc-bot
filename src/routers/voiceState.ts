@@ -43,7 +43,7 @@ export const voiceStateRouter = async (
   }
 
   if (!newState.channelId) {
-    disconnection(newState, oldState.channel?.name as string);
+    disconnection(oldState, oldState.channel?.name as string);
     return;
   }
 
@@ -52,7 +52,7 @@ export const voiceStateRouter = async (
     newState.channelId &&
     oldState.channelId !== newState.channelId
   ) {
-    channelChange(newState, oldState.channel?.name as string);
+    channelChange(oldState, newState);
     return;
   }
 };

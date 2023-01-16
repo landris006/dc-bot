@@ -22,9 +22,9 @@ model Guild {
   createdAt DateTime @default(now())
   iconURL   String?
 
-  guildMembers   GuildMember[]
-  voiceChannels  VoiceChannel[]
-  MessageChannel MessageChannel[]
+  guildMembers  GuildMember[]
+  voiceChannels VoiceChannel[]
+  textChannels  TextChannel[]
 }
 
 model GuildMember {
@@ -34,10 +34,10 @@ model GuildMember {
   joinedAt DateTime
   nickname String?
 
-  user       User         @relation(fields: [userID], references: [id])
-  guild      Guild        @relation(fields: [guildID], references: [id])
-  Connection Connection[]
-  Message    Message[]
+  user        User         @relation(fields: [userID], references: [id])
+  guild       Guild        @relation(fields: [guildID], references: [id])
+  connections Connection[]
+  messages    Message[]
 
   @@unique([guildID, userID])
 }
@@ -47,8 +47,8 @@ model VoiceChannel {
   name    String
   guildID String
 
-  guild      Guild        @relation(fields: [guildID], references: [id])
-  Connection Connection[]
+  guild       Guild        @relation(fields: [guildID], references: [id])
+  connections Connection[]
 }
 
 model Connection {
@@ -62,21 +62,21 @@ model Connection {
   guildMember  GuildMember  @relation(fields: [guildMemberID], references: [id])
 }
 
-model MessageChannel {
+model TextChannel {
   id      String @id
   name    String
   guildID String
 
-  guild   Guild     @relation(fields: [guildID], references: [id])
-  Message Message[]
+  guild    Guild     @relation(fields: [guildID], references: [id])
+  messages Message[]
 }
 
 model Message {
-  id               String   @id @default(uuid())
-  messageChannelID String
-  guildMemberID    String
-  sentAt           DateTime @default(now())
+  id            String   @id @default(uuid())
+  textChannelID String
+  guildMemberID String
+  sentAt        DateTime @default(now())
 
-  messageChannel MessageChannel @relation(fields: [messageChannelID], references: [id])
-  guildMember    GuildMember    @relation(fields: [guildMemberID], references: [id])
+  textChannel TextChannel @relation(fields: [textChannelID], references: [id])
+  guildMember GuildMember @relation(fields: [guildMemberID], references: [id])
 }

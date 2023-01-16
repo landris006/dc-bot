@@ -19,7 +19,7 @@ export const upsertMember = async (
   });
 
   await prisma.guildMember.upsert({
-    where: { guildID_userID: { guildID, userID: userID } },
+    where: { guildID_userID: { guildID, userID } },
     update: {
       nickname: nickname ?? username,
       ...customMemberUpdate,

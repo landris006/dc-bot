@@ -3,6 +3,10 @@ import { upsertMember } from '../utils/upsertMember';
 import fs from 'fs';
 
 export const messageHandler = async (message: Message) => {
+  if (message.member?.user.bot) {
+    return;
+  }
+
   const guildID = message.guild?.id;
   const member = message.member;
 
