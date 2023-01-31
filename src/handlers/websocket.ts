@@ -2,7 +2,9 @@ import { Socket } from 'socket.io';
 import { client } from '..';
 import { getGuildChannelStatus } from '../utils/getChannelStatus';
 
-export const subscribe = async (socket: Socket, guildID: string) => {
+export const init = async (socket: Socket) => {
+  const guildID = socket.handshake.query.guildID;
+
   if (typeof guildID !== 'string') {
     socket.emit('error', "'guildID' is not a string...");
     return;
@@ -16,5 +18,5 @@ export const subscribe = async (socket: Socket, guildID: string) => {
   }
 
   socket.emit('update', getGuildChannelStatus(guild.channels.cache));
-  socket.join(guild.id);
+  await socket.join(guild.id);
 };
