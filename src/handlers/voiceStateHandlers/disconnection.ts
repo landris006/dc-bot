@@ -27,6 +27,11 @@ export const disconnection = async (
       endTime: null,
     },
   });
+
+  if (!openConnections.length) {
+    return;
+  }
+
   if (openConnections.length > 1) {
     return prisma.connection.deleteMany({
       where: {
