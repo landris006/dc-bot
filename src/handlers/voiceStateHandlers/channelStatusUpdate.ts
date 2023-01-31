@@ -1,5 +1,5 @@
-import { VoiceState } from "discord.js";
-import { io } from "../..";
+import { VoiceState } from 'discord.js';
+import { io } from '../..';
 
 export const channelStatusUpdate = async (newState: VoiceState) => {
   const channels = newState.guild.channels.cache;
@@ -16,5 +16,5 @@ export const channelStatusUpdate = async (newState: VoiceState) => {
     return status;
   }, {});
 
-  io.in(newState.guild.id).emit("update", status);
+  io.in(newState.guild.id).emit('update', status);
 };

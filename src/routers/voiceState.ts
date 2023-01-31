@@ -1,14 +1,14 @@
-import { VoiceState } from "discord.js";
-import { client } from "..";
-import { channelChange } from "../handlers/voiceStateHandlers/channelChange";
-import { channelStatusUpdate } from "../handlers/voiceStateHandlers/channelStatusUpdate";
-import { connection } from "../handlers/voiceStateHandlers/connection";
-import { disconnection } from "../handlers/voiceStateHandlers/disconnection";
-import { minecraft } from "../handlers/voiceStateHandlers/minecraft";
+import { VoiceState } from 'discord.js';
+import { client } from '..';
+import { channelChange } from '../handlers/voiceStateHandlers/channelChange';
+import { channelStatusUpdate } from '../handlers/voiceStateHandlers/channelStatusUpdate';
+import { connection } from '../handlers/voiceStateHandlers/connection';
+import { disconnection } from '../handlers/voiceStateHandlers/disconnection';
+import { minecraft } from '../handlers/voiceStateHandlers/minecraft';
 
 export const voiceStateRouter = async (
   oldState: VoiceState,
-  newState: VoiceState
+  newState: VoiceState,
 ) => {
   const botID = client.user?.id;
 

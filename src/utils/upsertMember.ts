@@ -9,7 +9,7 @@ export const upsertMember = async (
     avatarURL: string | null;
     joinedAt: Date | null;
   },
-  customMemberUpdate?: object
+  customMemberUpdate?: object,
 ) => {
   const { userID, username, guildID, nickname, avatarURL, joinedAt } = data;
   await prisma.user.upsert({

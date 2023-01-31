@@ -44,7 +44,7 @@ export const startup = async () => {
             avatarURL: member.user.avatarURL(),
             joinedAt: member.joinedAt,
           });
-        })
+        }),
       );
 
       await prisma.connection.deleteMany({
@@ -83,8 +83,8 @@ export const startup = async () => {
               },
             });
           }
-        })
+        }),
       );
-    })
+    }),
   );
 };

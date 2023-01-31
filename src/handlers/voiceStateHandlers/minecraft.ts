@@ -21,7 +21,7 @@ export const minecraft = (oldState: VoiceState, newState: VoiceState) => {
     },
   });
   const resource = createAudioResource(
-    `${process.cwd()}/assets/sound/get-out-of-my-room-im-playing-minecraft.mp3`
+    `${process.cwd()}/assets/sound/get-out-of-my-room-im-playing-minecraft.mp3`,
   );
 
   player.play(resource);

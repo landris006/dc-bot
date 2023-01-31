@@ -36,6 +36,6 @@ export const banish = async (interaction: CommandInteraction) => {
   await lastMessage.delete();
 
   return interaction.reply(
-    'Bro, you posted cringe, your message has been sent to the Shadow Realm.'
+    'Bro, you posted cringe, your message has been sent to the Shadow Realm.',
   );
 };

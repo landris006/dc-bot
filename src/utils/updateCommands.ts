@@ -23,7 +23,7 @@ const commands = [
   new SlashCommandBuilder()
     .setName('level')
     .setDescription(
-      'Tells you how much more hours are needed for the next level.'
+      'Tells you how much more hours are needed for the next level.',
     ),
   new SlashCommandBuilder()
     .setName('turtles')
@@ -44,7 +44,7 @@ rest
     logger(
       `Successfully registered ${
         (data as RESTPostAPIApplicationCommandsJSONBody[]).length
-      } application commands.`
-    )
+      } application commands.`,
+    ),
   )
   .catch(console.error);

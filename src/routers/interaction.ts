@@ -25,7 +25,7 @@ export const interactionRouer = async (interaction: Interaction<CacheType>) => {
   await logger(
     `${
       (interaction.member as GuildMember).nickname
-    } used the '/${commandName}' command!`
+    } used the '/${commandName}' command!`,
   );
 
   // TODO: dynamically import commands

@@ -1,11 +1,11 @@
-import { Socket } from "socket.io";
-import { prisma } from "..";
+import { Socket } from 'socket.io';
+import { prisma } from '..';
 
 export const subscribe = async (socket: Socket, guildID: string) => {
   console.log(guildID);
 
-  if (typeof guildID !== "string") {
-    socket.emit("error", "'guildID' is not a string...");
+  if (typeof guildID !== 'string') {
+    socket.emit('error', "'guildID' is not a string...");
     return;
   }
 
@@ -16,7 +16,7 @@ export const subscribe = async (socket: Socket, guildID: string) => {
   });
 
   if (!guild) {
-    socket.emit("error", "'guildID' is not valid...");
+    socket.emit('error', "'guildID' is not valid...");
     return;
   }
 

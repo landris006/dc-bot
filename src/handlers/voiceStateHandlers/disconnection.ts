@@ -5,7 +5,7 @@ import { logger } from '../../utils/logger';
 
 export const disconnection = async (
   oldState: VoiceState,
-  oldChannelName: string
+  oldChannelName: string,
 ) => {
   const member = oldState.member;
   const channel = oldState.channel;
@@ -53,13 +53,13 @@ export const disconnection = async (
     `${oldState.member?.nickname} left '${oldChannelName}' after: ${
       (hoursSpent / Conversions.MILISECONDS_TO_HOURS) *
       Conversions.MILISECONDS_TO_SECONDS
-    } seconds`
+    } seconds`,
   );
 
   const level = Conversions.HOURS_TO_LEVEL(hoursSpent);
 
   let roleForLevel = oldState.guild.roles.cache.find(
-    (role) => role.name === `Level ${level}`
+    (role) => role.name === `Level ${level}`,
   );
 
   if (!roleForLevel) {
@@ -72,7 +72,7 @@ export const disconnection = async (
   await Promise.all(
     member.roles.cache
       .filter((role) => role.name.startsWith('Level'))
-      .map((role) => member.roles.remove(role))
+      .map((role) => member.roles.remove(role)),
   );
   await member.roles.add(roleForLevel);
 };

@@ -10,7 +10,7 @@ export const minecraft = async (interaction: CommandInteraction) => {
   const avaliableChannels = interaction.guild?.channels.cache.filter(
     (channel) =>
       (channel.members as Collection<string, GuildMember>).size === 0 &&
-      !channel.name.toLowerCase().includes('afk')
+      !channel.name.toLowerCase().includes('afk'),
   );
 
   if (!avaliableChannels?.size) {

@@ -1,10 +1,10 @@
-import { Client, GatewayIntentBits, VoiceState } from "discord.js";
-import { PrismaClient } from "@prisma/client";
-import { Server } from "socket.io";
-import env from "dotenv";
-import { logger } from "./utils/logger";
-import { eventRouter } from "./routers/events";
-import { webSocketRouter } from "./routers/websocket";
+import { Client, GatewayIntentBits, VoiceState } from 'discord.js';
+import { PrismaClient } from '@prisma/client';
+import { Server } from 'socket.io';
+import env from 'dotenv';
+import { logger } from './utils/logger';
+import { eventRouter } from './routers/events';
+import { webSocketRouter } from './routers/websocket';
 env.config();
 
 export const prisma = new PrismaClient();
@@ -51,7 +51,7 @@ webSocketRouter(io);
 
 eventRouter(client);
 
-process.on("uncaughtException", (ex) => {
+process.on('uncaughtException', (ex) => {
   client.state.currentConnection?.disconnect();
   logger(ex.stack as string);
 });

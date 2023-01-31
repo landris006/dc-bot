@@ -13,7 +13,7 @@ export const turtles = async (interaction: CommandInteraction) => {
 
   if (!channelId) {
     return interaction.reply(
-      'You must be in a voice channel for this command to work!'
+      'You must be in a voice channel for this command to work!',
     );
   }
 
@@ -32,7 +32,7 @@ export const turtles = async (interaction: CommandInteraction) => {
     },
   });
   const resource = createAudioResource(
-    `${process.cwd()}/assets/sound/where-are-the-turtles.mp3`
+    `${process.cwd()}/assets/sound/where-are-the-turtles.mp3`,
   );
 
   player.play(resource);

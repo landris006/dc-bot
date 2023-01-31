@@ -40,8 +40,8 @@ export const level = async (interaction: CommandInteraction) => {
       currentLevel + 1
     } (${Conversions.LEVEL_TO_HOURS(currentLevel + 1)} hours) in ${
       Math.round(
-        (Conversions.LEVEL_TO_HOURS(currentLevel + 1) - hoursActive) * 100
+        (Conversions.LEVEL_TO_HOURS(currentLevel + 1) - hoursActive) * 100,
       ) / 100
-    } hours.`
+    } hours.`,
   );
 };
