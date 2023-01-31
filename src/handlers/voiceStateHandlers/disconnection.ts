@@ -27,11 +27,12 @@ export const disconnection = async (
       endTime: null,
     },
   });
-  if (openConnections.length !== 1) {
+  if (openConnections.length > 1) {
     return prisma.connection.deleteMany({
       where: {
         guildMemberID: guildMember.id,
         voiceChannelID: channel.id,
+        endTime: null,
       },
     });
   }
