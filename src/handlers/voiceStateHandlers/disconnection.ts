@@ -51,18 +51,36 @@ export const disconnection = async (
     },
   });
 
-  const hoursSpent =
-    (connection.endTime!.getTime() - connection.startTime.getTime()) *
-    Conversions.MILISECONDS_TO_HOURS;
+  const timeSpent =
+    connection.endTime!.getTime() - connection.startTime.getTime();
 
   await logger(
     `${oldState.member?.nickname} left '${oldChannelName}' after: ${
-      (hoursSpent / Conversions.MILISECONDS_TO_HOURS) *
-      Conversions.MILISECONDS_TO_SECONDS
+      timeSpent * Conversions.MILISECONDS_TO_SECONDS
     } seconds`,
   );
 
-  const level = Conversions.HOURS_TO_LEVEL(hoursSpent);
+  const connections = await prisma.connection.findMany({
+    where: {
+      guildMemberID: member.id,
+    },
+  });
+
+  const totalTimeSpent = connections.reduce((acc, connection) => {
+    if (connection.endTime) {
+      return (
+        acc +
+        (connection.endTime.getTime() - connection.startTime.getTime()) *
+          Conversions.MILISECONDS_TO_HOURS
+      );
+    }
+
+    return acc;
+  }, 0);
+
+  const level = Conversions.HOURS_TO_LEVEL(
+    totalTimeSpent * Conversions.MILISECONDS_TO_HOURS,
+  );
 
   let roleForLevel = oldState.guild.roles.cache.find(
     (role) => role.name === `Level ${level}`,
