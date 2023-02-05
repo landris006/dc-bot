@@ -1,11 +1,11 @@
 import { CacheType, GuildMember, Interaction } from 'discord.js';
 import { logger } from '../utils/logger';
-import { ping } from '../handlers/interactionHandlers.ts/ping';
-import { banish } from '../handlers/interactionHandlers.ts/banish';
-import { leave } from '../handlers/interactionHandlers.ts/leave';
-import { level } from '../handlers/interactionHandlers.ts/level';
-import { minecraft } from '../handlers/interactionHandlers.ts/minecraft';
-import { turtles } from '../handlers/interactionHandlers.ts/turtles';
+import { ping } from '../handlers/interactions/ping';
+import { banish } from '../handlers/interactions/banish';
+import { leave } from '../handlers/interactions/leave';
+import { level } from '../handlers/interactions/level';
+import { minecraft } from '../handlers/interactions/minecraft';
+import { turtles } from '../handlers/interactions/turtles';
 
 export const interactionRouer = async (interaction: Interaction<CacheType>) => {
   if (!interaction.isChatInputCommand()) {
