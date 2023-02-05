@@ -6,6 +6,7 @@ import { leave } from '../handlers/interactions/leave';
 import { level } from '../handlers/interactions/level';
 import { minecraft } from '../handlers/interactions/minecraft';
 import { turtles } from '../handlers/interactions/turtles';
+import { current } from '../handlers/interactions/current';
 
 export const interactionRouer = async (interaction: Interaction<CacheType>) => {
   if (!interaction.isChatInputCommand()) {
@@ -20,6 +21,7 @@ export const interactionRouer = async (interaction: Interaction<CacheType>) => {
     | 'level'
     | 'turtles'
     | 'minecraft'
+    | 'current'
     | 'leave';
 
   await logger(
@@ -47,6 +49,9 @@ export const interactionRouer = async (interaction: Interaction<CacheType>) => {
       break;
     case 'leave':
       await leave(interaction);
+      break;
+    case 'current':
+      await current(interaction);
       break;
 
     default:

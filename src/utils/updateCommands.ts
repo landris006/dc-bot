@@ -23,7 +23,7 @@ const commands = [
   new SlashCommandBuilder()
     .setName('level')
     .setDescription(
-      'Tells you how much more hours are needed for the next level.',
+      'Tells you how many more hours are needed for the next level.',
     ),
   new SlashCommandBuilder()
     .setName('turtles')
@@ -34,6 +34,9 @@ const commands = [
   new SlashCommandBuilder()
     .setName('leave')
     .setDescription('Leaves any voice channel it is currently in.'),
+  new SlashCommandBuilder()
+    .setName('current')
+    .setDescription('Lists currently connected users.'),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN!);
