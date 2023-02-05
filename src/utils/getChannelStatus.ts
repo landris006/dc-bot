@@ -15,6 +15,7 @@ export const getGuildChannelStatus = (
       id: member.user.id,
       muted: member.voice.mute ?? false,
       deafened: member.voice.deaf ?? false,
+      streaming: member.voice.streaming ?? false,
     }));
 
     return status;
