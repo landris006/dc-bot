@@ -1,4 +1,4 @@
-import { client, prisma } from '../../index';
+import { prisma } from '../../index';
 import { VoiceState } from 'discord.js';
 import { Conversions } from '../../utils/conversions';
 import { logger } from '../../utils/logger';
@@ -62,20 +62,17 @@ export const disconnection = async (
 
   const connections = await prisma.connection.findMany({
     where: {
-      guildMemberID: member.id,
+      guildMemberID: guildMember.id,
     },
   });
 
-  const totalTimeSpent = connections.reduce((acc, connection) => {
-    if (connection.endTime) {
-      return (
-        acc +
-        (connection.endTime.getTime() - connection.startTime.getTime()) *
-          Conversions.MILISECONDS_TO_HOURS
-      );
+  const totalTimeSpent = connections.reduce((total, connection) => {
+    const { startTime, endTime } = connection;
+    if (!endTime) {
+      return total;
     }
 
-    return acc;
+    return total + (endTime.getTime() - startTime.getTime());
   }, 0);
 
   const level = Conversions.HOURS_TO_LEVEL(

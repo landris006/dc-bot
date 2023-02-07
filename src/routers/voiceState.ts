@@ -16,7 +16,7 @@ export const voiceStateRouter = async (
     return;
   }
 
-  channelStatusUpdate(newState);
+  await channelStatusUpdate(newState);
 
   // Other bot connect
   if (newState.member?.user.bot && newState.member.user.id !== botID) {
@@ -41,12 +41,12 @@ export const voiceStateRouter = async (
   }
 
   if (!oldState.channelId) {
-    connection(newState);
+    await connection(newState);
     return;
   }
 
   if (!newState.channelId) {
-    disconnection(oldState, oldState.channel?.name as string);
+    await disconnection(oldState, oldState.channel?.name as string);
     return;
   }
 
@@ -55,7 +55,6 @@ export const voiceStateRouter = async (
     newState.channelId &&
     oldState.channelId !== newState.channelId
   ) {
-    channelChange(oldState, newState);
-    return;
+    await channelChange(oldState, newState);
   }
 };

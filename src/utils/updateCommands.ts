@@ -33,7 +33,7 @@ const commands = [
     .setDescription('Starts playing Minecraft in an empty voice channel.'),
   new SlashCommandBuilder()
     .setName('leave')
-    .setDescription('Leaves any voice channel it is currently in.'),
+    .setDescription('Leaves the voice channel it is currently in.'),
   new SlashCommandBuilder()
     .setName('current')
     .setDescription('Lists currently connected users.'),

@@ -1,25 +1,26 @@
 import { CacheType, GuildMember, Interaction } from 'discord.js';
 import { logger } from '../utils/logger';
 
-export const interactionRouer = async (interaction: Interaction<CacheType>) => {
+export const interactionRouter = async (
+  interaction: Interaction<CacheType>,
+) => {
   if (!interaction.isChatInputCommand()) {
     return;
   }
 
-  const commandName = interaction.commandName as Commands;
+  const commandName = interaction.commandName;
 
-  const commandHandler = await import(
-    `../handlers/interactions/${commandName}`
-  );
+  const commandHandler = (
+    await import(`../handlers/interactions/${commandName}`)
+  )[commandName];
 
   if (typeof commandHandler !== 'function') {
     setTimeout(() => {
       interaction.deleteReply();
     }, 10000);
 
-    return interaction.reply(
-      'There was an error while executing this command!',
-    );
+    await interaction.reply('There was an error while executing this command!');
+    return;
   }
 
   await commandHandler(interaction);
@@ -34,12 +35,3 @@ export const interactionRouer = async (interaction: Interaction<CacheType>) => {
     interaction.deleteReply();
   }, 10000);
 };
-
-type Commands =
-  | 'ping'
-  | 'banish'
-  | 'level'
-  | 'turtles'
-  | 'minecraft'
-  | 'current'
-  | 'leave';

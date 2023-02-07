@@ -7,7 +7,8 @@ export const current = async (interaction: CommandInteraction) => {
   const channels = (await interaction.guild?.channels.fetch())?.filter(
     (channel) => channel?.isVoiceBased(),
   );
-  if (!channels?.keys.length) {
+
+  if (!channels?.size) {
     return interaction.reply('This guild has no voice channels!');
   }
 

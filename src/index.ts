@@ -7,7 +7,9 @@ import { eventRouter } from './routers/events';
 import { webSocketRouter } from './routers/websocket';
 env.config();
 
-export const prisma = new PrismaClient();
+export const prisma = new PrismaClient({
+  log: ['info', 'warn', 'error'],
+});
 export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
