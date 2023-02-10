@@ -16,6 +16,14 @@ export const connection = async (newState: VoiceState) => {
     return;
   }
 
+  // quickly connecting and disconnecting can cause duplicate connections
+  await prisma.connection.deleteMany({
+    where: {
+      guildMemberID: guildMember.id,
+      endTime: null,
+    },
+  });
+
   await prisma.connection.create({
     data: {
       guildMemberID: guildMember.id,
