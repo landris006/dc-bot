@@ -4,6 +4,7 @@ import { messageHandler } from '../handlers/message';
 import { startup } from '../handlers/startup';
 import { channelUpdate } from '../handlers/updateHandlers/channelUpdate';
 import { guildMemberUpdate } from '../handlers/updateHandlers/guildMemberUpdate';
+import { channelStatusUpdate } from '../handlers/voiceStateHandlers/channelStatusUpdate';
 import { interactionRouter } from './interaction';
 import { voiceStateRouter } from './voiceState';
 
@@ -14,7 +15,10 @@ export const eventRouter = (
 ) => {
   client.once('ready', startup);
   client.on('guildCreate', startup);
-  client.on('voiceStateUpdate', voiceStateRouter);
+  client.on('voiceStateUpdate', async (oldState, newState) => {
+    await voiceStateRouter(oldState, newState);
+    await channelStatusUpdate(newState);
+  });
   client.on('interactionCreate', interactionRouter);
   client.on('messageCreate', messageHandler);
   client.on('channelCreate', channelUpdate);

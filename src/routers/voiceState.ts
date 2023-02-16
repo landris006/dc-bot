@@ -1,7 +1,6 @@
 import { VoiceState } from 'discord.js';
 import { client } from '..';
 import { channelChange } from '../handlers/voiceStateHandlers/channelChange';
-import { channelStatusUpdate } from '../handlers/voiceStateHandlers/channelStatusUpdate';
 import { connection } from '../handlers/voiceStateHandlers/connection';
 import { disconnection } from '../handlers/voiceStateHandlers/disconnection';
 import { minecraft } from '../handlers/voiceStateHandlers/minecraft';
@@ -15,8 +14,6 @@ export const voiceStateRouter = async (
   if (!botID) {
     return;
   }
-
-  await channelStatusUpdate(newState);
 
   // Other bot connect
   if (newState.member?.user.bot && newState.member.user.id !== botID) {
