@@ -37,14 +37,12 @@ export const voiceStateRouter = async (
     minecraft(oldState, newState);
   }
 
-  if (!oldState.channelId) {
+  if (newState.channelId && !oldState.channelId) {
     await connection(newState);
-    return;
   }
 
-  if (!newState.channelId) {
+  if (!newState.channelId && oldState.channelId) {
     await disconnection(oldState, oldState.channel?.name as string);
-    return;
   }
 
   if (

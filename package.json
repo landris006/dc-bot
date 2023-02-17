@@ -16,7 +16,8 @@
     "start": "node dist/index.js",
     "watch": "tsc --watch",
     "update": "node dist/utils/updateCommands.js",
-    "build": "tsc && prisma generate"
+    "build": "tsc && prisma generate",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",

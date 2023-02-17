@@ -5,15 +5,10 @@ import { upsertMember } from '../utils/upsertMember';
 
 export const startup = async () => {
   client.user?.setActivity({
-    name: 'with your mom',
+    name: process.env.ENVIRONMENT === 'dev' ? 'testing' : 'with your mom',
     type: ActivityType.Playing,
   });
   logger(`Logged in as ${client.user?.tag}!`);
-
-  if (process.env.ENVIRONMENT === 'dev') {
-    logger('Dev mode enabled, skipping database sync');
-    return;
-  }
 
   Promise.all(
     client.guilds.cache.map(async (guild) => {
