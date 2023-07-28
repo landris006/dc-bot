@@ -3,8 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { Server } from 'socket.io';
 import env from 'dotenv';
 import { logger } from './utils/logger';
-import { eventRouter } from './routers/events';
-import { webSocketRouter } from './routers/websocket';
+import { eventRouter as buildEventRouter } from './routers/events';
+import { webSocketRouter as buildWebsocketRouter } from './routers/websocket';
 env.config();
 
 export const prisma = new PrismaClient({
@@ -22,23 +22,11 @@ export const client = new Client({
   state: ClientState;
 };
 client.state = {
-  connections: new Map<string, Connection>(),
   currentConnection: null,
   isPlayingMinecraft: null,
 };
 
-interface Connection {
-  startTime: number;
-  guildID: string;
-}
 export interface ClientState {
-  connections: Map<
-    string,
-    {
-      startTime: number;
-      guildID: string;
-    }
-  >;
   currentConnection: VoiceState | null;
   isPlayingMinecraft: string | null;
 }
@@ -50,13 +38,13 @@ export const io = new Server(+PORT, {
     credentials: true,
   },
 });
-webSocketRouter(io);
+buildWebsocketRouter(io);
 
-eventRouter(client);
+buildEventRouter(client);
 
-process.on('uncaughtException', (ex) => {
+process.on('uncaughtException', (error) => {
   client.state.currentConnection?.disconnect();
-  logger(ex.stack as string);
+  logger(error.stack as string);
 });
 
 client.login(process.env.TOKEN);
