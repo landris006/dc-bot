@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@discordjs/voice": "^0.13.0",
-    "@prisma/client": "^4.3.1",
+    "@prisma/client": "^5.0.0",
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.2",
     "ffmpeg-static": "^5.1.0",
@@ -16,7 +16,7 @@
     "start": "node dist/index.js",
     "watch": "tsc --watch",
     "update": "node dist/utils/updateCommands.js",
-    "build": "tsc && prisma generate",
+    "build": "prisma generate && tsc ",
     "postinstall": "prisma generate"
   },
   "keywords": [],
@@ -28,7 +28,7 @@
     "@typescript-eslint/parser": "^5.57.1",
     "concurrently": "^7.6.0",
     "eslint": "^8.45.0",
-    "prisma": "^4.8.1",
+    "prisma": "^5.0.0",
     "typescript": "^4.9.4"
   },
   "optionalDependencies": {
