@@ -1,4 +1,4 @@
-import { Client } from 'discord.js';
+import { Client, Events } from 'discord.js';
 import { ClientState } from '..';
 import { messageHandler } from '../handlers/message';
 import { startup } from '../handlers/startup';
@@ -13,24 +13,24 @@ export const eventRouter = (
     state: ClientState;
   },
 ) => {
-  client.once('ready', startup);
-  client.on('guildCreate', startup);
-  client.on('voiceStateUpdate', async (oldState, newState) => {
+  client.once(Events.ClientReady, startup);
+  client.on(Events.GuildCreate, startup);
+  client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     await voiceStateRouter(oldState, newState);
     await channelStatusUpdate(newState);
   });
-  client.on('interactionCreate', interactionRouter);
-  client.on('messageCreate', messageHandler);
-  client.on('channelCreate', channelUpdate);
-  client.on('channelUpdate', (_, newChannel) => {
+  client.on(Events.InteractionCreate, interactionRouter);
+  client.on(Events.MessageCreate, messageHandler);
+  client.on(Events.ChannelCreate, channelUpdate);
+  client.on(Events.ChannelUpdate, (_, newChannel) => {
     if (newChannel.isDMBased()) {
       return;
     }
 
     channelUpdate(newChannel);
   });
-  client.on('guildMemberAdd', guildMemberUpdate);
-  client.on('guildMemberUpdate', (_, newMember) => {
+  client.on(Events.GuildMemberAdd, guildMemberUpdate);
+  client.on(Events.GuildMemberUpdate, (_, newMember) => {
     guildMemberUpdate(newMember);
   });
 };

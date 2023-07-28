@@ -17,6 +17,7 @@ export const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildPresences,
   ],
 }) as Client & {
   state: ClientState;
