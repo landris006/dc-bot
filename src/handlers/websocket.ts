@@ -3,17 +3,17 @@ import { client } from '..';
 import { getGuildChannelStatus } from '../utils/getChannelStatus';
 
 export const init = async (socket: Socket) => {
-  const guildID = socket.handshake.query.guildID;
+  const guildId = socket.handshake.query.guildId;
 
-  if (typeof guildID !== 'string') {
-    socket.emit('error', "'guildID' is not a string...");
+  if (typeof guildId !== 'string') {
+    socket.emit('error', "'guildId' is not a string...");
     return;
   }
 
-  const guild = client.guilds.cache.get(guildID);
+  const guild = client.guilds.cache.get(guildId);
 
   if (!guild) {
-    socket.emit('error', "'guildID' is not valid...");
+    socket.emit('error', "'guildId' is not valid...");
     return;
   }
 
