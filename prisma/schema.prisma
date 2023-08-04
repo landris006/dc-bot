@@ -11,72 +11,85 @@ datasource db {
 model User {
   id        String  @id
   username  String
-  avatarURL String?
+  avatarUrl String? @map("avatar_url")
 
   guildMembers GuildMember[]
+
+  @@map("user")
 }
 
 model Guild {
   id        String   @id
   name      String
-  createdAt DateTime @default(now())
-  iconURL   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  iconUrl   String?  @map("icon_url")
 
   guildMembers  GuildMember[]
   voiceChannels VoiceChannel[]
   textChannels  TextChannel[]
+
+  @@map("guild")
 }
 
 model GuildMember {
   id       String   @id @default(uuid())
-  guildID  String
-  userID   String
-  joinedAt DateTime
+  guildId  String   @map("guild_id")
+  userId   String   @map("user_id")
+  joinedAt DateTime @map("joined_at")
   nickname String?
 
-  user        User         @relation(fields: [userID], references: [id])
-  guild       Guild        @relation(fields: [guildID], references: [id])
+  user        User         @relation(fields: [userId], references: [id])
+  guild       Guild        @relation(fields: [guildId], references: [id])
   connections Connection[]
   messages    Message[]
 
-  @@unique([guildID, userID])
+  @@unique([guildId, userId])
+  @@map("guild_member")
 }
 
 model VoiceChannel {
   id      String @id
   name    String
-  guildID String
+  guildId String @map("guild_id")
 
-  guild       Guild        @relation(fields: [guildID], references: [id])
+  guild       Guild        @relation(fields: [guildId], references: [id])
   connections Connection[]
+
+  @@map("voice_channel")
 }
 
 model Connection {
   id             String    @id @default(uuid())
-  guildMemberID  String
-  voiceChannelID String
-  startTime      DateTime  @default(now())
-  endTime        DateTime?
+  guildMemberId  String    @map("guild_member_id")
+  voiceChannelId String    @map("voice_channel_id")
+  startTime      DateTime  @default(now()) @map("start_time")
+  endTime        DateTime? @map("end_time")
 
-  voiceChannel VoiceChannel @relation(fields: [voiceChannelID], references: [id])
-  guildMember  GuildMember  @relation(fields: [guildMemberID], references: [id])
+  voiceChannel VoiceChannel @relation(fields: [voiceChannelId], references: [id])
+  guildMember  GuildMember  @relation(fields: [guildMemberId], references: [id])
+
+  @@map("connection")
 }
 
 model TextChannel {
   id      String @id
   name    String
-  guildID String
+  guildId String @map("guild_id")
 
-  guild    Guild     @relation(fields: [guildID], references: [id])
+  guild    Guild     @relation(fields: [guildId], references: [id])
   messages Message[]
+
+  @@map("text_channel")
 }
 
 model Message {
   id            String   @id @default(uuid())
-  textChannelID String
-  guildMemberID String
-  sentAt        DateTime @default(now())
+  textChannelId String   @map("text_channel_id")
+  guildMemberId String   @map("guild_member_id")
+  sentAt        DateTime @default(now()) @map("sent_at")
 
-  textChannel TextChannel @relation(fields: [textChannelID], references: [id])
-  guildMember GuildMember @relation(fields: [guildMemberID], references: [id])
+  textChannel TextChannel @relation(fields: [textChannelId], references: [id])
+  guildMember GuildMember @relation(fields: [guildMemberId], references: [id])
+
+  @@map("message")
 }

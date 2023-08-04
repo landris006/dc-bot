@@ -12,11 +12,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon dist/index.js\"",
+    "dev": "ts-node src/index.ts --watch",
     "start": "node dist/index.js",
-    "watch": "tsc --watch",
-    "update": "node dist/utils/updateCommands.js",
-    "build": "prisma generate && tsc ",
+    "update": "tsc && node dist/utils/updateCommands.js",
+    "build": "prisma generate && tsc",
     "postinstall": "prisma generate"
   },
   "keywords": [],
@@ -29,7 +28,8 @@
     "concurrently": "^7.6.0",
     "eslint": "^8.45.0",
     "prisma": "^5.0.0",
-    "typescript": "^4.9.4"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.7",

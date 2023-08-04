@@ -9,16 +9,16 @@ export const messageHandler = async (message: Message) => {
 
   const guildMember = await prisma.guildMember.findFirst({
     where: {
-      guildID: message.guild?.id,
-      userID: message.member?.user.id,
+      guildId: message.guild?.id,
+      userId: message.member?.user.id,
     },
   });
 
   if (guildMember) {
     await prisma.message.create({
       data: {
-        textChannelID: message.channel.id,
-        guildMemberID: guildMember.id,
+        textChannelId: message.channel.id,
+        guildMemberId: guildMember.id,
       },
     });
   }
@@ -30,9 +30,7 @@ export const messageHandler = async (message: Message) => {
       }
 
       message.channel.send({
-        files: [
-          `./assets/kirei/${files[Math.floor(Math.random() * files.length)]}`,
-        ],
+        files: [`./assets/kirei/${files[Math.floor(Math.random() * files.length)]}`],
       });
     });
   }

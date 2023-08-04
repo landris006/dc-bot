@@ -21,7 +21,7 @@ export const current = async (interaction: CommandInteraction) => {
 
         return prisma.connection.findMany({
           where: {
-            voiceChannelID: channel.id,
+            voiceChannelId: channel.id,
             endTime: null,
           },
         });
@@ -37,7 +37,7 @@ export const current = async (interaction: CommandInteraction) => {
     ongoingConnections.map(async (connection) => {
       const member = await prisma.guildMember.findUnique({
         where: {
-          id: connection.guildMemberID,
+          id: connection.guildMemberId,
         },
         include: {
           user: true,
@@ -48,12 +48,9 @@ export const current = async (interaction: CommandInteraction) => {
         return '';
       }
 
-      const connectionTime =
-        new Date().getTime() - connection.startTime.getTime();
+      const connectionTime = new Date().getTime() - connection.startTime.getTime();
 
-      return `${
-        member.nickname ?? member.user.username
-      } has been connected for ${
+      return `${member.nickname ?? member.user.username} has been connected for ${
         connectionTime * Conversions.MILISECONDS_TO_SECONDS
       } seconds.`;
     }),

@@ -2,31 +2,31 @@ import { prisma } from '../index';
 
 export const upsertMember = async (
   data: {
-    userID: string;
+    userId: string;
     username: string;
-    guildID: string;
+    guildId: string;
     nickname: string | null;
-    avatarURL: string | null;
+    avatarUrl: string | null;
     joinedAt: Date | null;
   },
   customMemberUpdate?: object,
 ) => {
-  const { userID, username, guildID, nickname, avatarURL, joinedAt } = data;
+  const { userId, username, guildId, nickname, avatarUrl, joinedAt } = data;
   await prisma.user.upsert({
-    where: { id: userID },
-    update: { username, avatarURL },
-    create: { id: userID, username, avatarURL },
+    where: { id: userId },
+    update: { username, avatarUrl },
+    create: { id: userId, username, avatarUrl },
   });
 
   await prisma.guildMember.upsert({
-    where: { guildID_userID: { guildID, userID } },
+    where: { guildId_userId: { guildId, userId } },
     update: {
       nickname: nickname ?? username,
       ...customMemberUpdate,
     },
     create: {
-      guildID,
-      userID,
+      guildId,
+      userId,
       joinedAt: joinedAt ?? Date(),
       nickname: nickname ?? username,
     },

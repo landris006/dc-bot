@@ -49,18 +49,18 @@ CREATE TABLE "Connection" (
 );
 
 -- CreateTable
-CREATE TABLE "MessageChannel" (
+CREATE TABLE "TextChannel" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "guildID" TEXT NOT NULL,
 
-    CONSTRAINT "MessageChannel_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "TextChannel_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Message" (
     "id" TEXT NOT NULL,
-    "messageChannelID" TEXT NOT NULL,
+    "textChannelID" TEXT NOT NULL,
     "guildMemberID" TEXT NOT NULL,
     "sentAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -86,10 +86,10 @@ ALTER TABLE "Connection" ADD CONSTRAINT "Connection_voiceChannelID_fkey" FOREIGN
 ALTER TABLE "Connection" ADD CONSTRAINT "Connection_guildMemberID_fkey" FOREIGN KEY ("guildMemberID") REFERENCES "GuildMember"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "MessageChannel" ADD CONSTRAINT "MessageChannel_guildID_fkey" FOREIGN KEY ("guildID") REFERENCES "Guild"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TextChannel" ADD CONSTRAINT "TextChannel_guildID_fkey" FOREIGN KEY ("guildID") REFERENCES "Guild"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Message" ADD CONSTRAINT "Message_messageChannelID_fkey" FOREIGN KEY ("messageChannelID") REFERENCES "MessageChannel"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Message" ADD CONSTRAINT "Message_textChannelID_fkey" FOREIGN KEY ("textChannelID") REFERENCES "TextChannel"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_guildMemberID_fkey" FOREIGN KEY ("guildMemberID") REFERENCES "GuildMember"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

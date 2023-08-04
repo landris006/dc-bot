@@ -12,14 +12,14 @@ export const startup = async () => {
 
   Promise.all(
     client.guilds.cache.map(async (guild) => {
-      const iconURL = guild.iconURL();
+      const iconUrl = guild.iconURL();
       await prisma.guild.upsert({
         where: { id: guild.id },
-        update: { name: guild.name, iconURL },
+        update: { name: guild.name, iconUrl },
         create: {
           id: guild.id,
           name: guild.name,
-          iconURL,
+          iconUrl,
           createdAt: guild.createdAt,
         },
       });
@@ -32,11 +32,11 @@ export const startup = async () => {
           }
 
           return upsertMember({
-            guildID: guild.id,
-            userID: member.user.id,
+            guildId: guild.id,
+            userId: member.user.id,
             username: member.user.username,
             nickname: member.nickname,
-            avatarURL: member.user.avatarURL(),
+            avatarUrl: member.user.avatarURL(),
             joinedAt: member.joinedAt,
           });
         }),
@@ -62,7 +62,7 @@ export const startup = async () => {
               create: {
                 id: channel.id,
                 name: channel.name,
-                guildID: guild.id,
+                guildId: guild.id,
               },
             });
           }
@@ -74,7 +74,7 @@ export const startup = async () => {
               create: {
                 id: channel.id,
                 name: channel.name,
-                guildID: guild.id,
+                guildId: guild.id,
               },
             });
           }

@@ -7,11 +7,11 @@ export const guildMemberUpdate = async (member: GuildMember) => {
   }
 
   return upsertMember({
-    guildID: member.guild.id,
-    userID: member.user.id,
+    guildId: member.guild.id,
+    userId: member.user.id,
     username: member.user.username,
     nickname: member.nickname,
-    avatarURL: member.user.avatarURL(),
+    avatarUrl: member.user.avatarURL(),
     joinedAt: member.joinedAt,
   });
 };

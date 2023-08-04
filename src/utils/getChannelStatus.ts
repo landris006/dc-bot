@@ -1,9 +1,7 @@
 import { Collection } from '@discordjs/collection';
 import { GuildBasedChannel } from 'discord.js';
 
-export const getGuildChannelStatus = (
-  channels: Collection<string, GuildBasedChannel>,
-) => {
+export const getGuildChannelStatus = (channels: Collection<string, GuildBasedChannel>) => {
   return channels.reduce<{
     [key: string]: { id: string; muted: boolean; deafened: boolean }[];
   }>((status, channel) => {

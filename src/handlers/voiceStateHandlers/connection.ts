@@ -10,7 +10,7 @@ export const connection = async (newState: VoiceState) => {
   }
 
   const guildMember = await prisma.guildMember.findFirst({
-    where: { guildID: member.guild.id, userID: member.user.id },
+    where: { guildId: member.guild.id, userId: member.user.id },
   });
   if (!guildMember) {
     return;
@@ -19,15 +19,15 @@ export const connection = async (newState: VoiceState) => {
   // quickly connecting and disconnecting can cause duplicate connections
   await prisma.connection.deleteMany({
     where: {
-      guildMemberID: guildMember.id,
+      guildMemberId: guildMember.id,
       endTime: null,
     },
   });
 
   await prisma.connection.create({
     data: {
-      guildMemberID: guildMember.id,
-      voiceChannelID: channel.id,
+      guildMemberId: guildMember.id,
+      voiceChannelId: channel.id,
     },
   });
 

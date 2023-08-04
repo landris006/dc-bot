@@ -12,17 +12,19 @@ export const turtles = async (interaction: CommandInteraction) => {
   const channelId = (interaction.member as GuildMember).voice.channelId;
 
   if (!channelId) {
-    return interaction.reply(
-      'You must be in a voice channel for this command to work!',
-    );
+    return interaction.reply('You must be in a voice channel for this command to work!');
   }
 
   client.state.isPlayingMinecraft = null;
 
+  if (!interaction.guild?.voiceAdapterCreator) {
+    return;
+  }
+
   const connection = joinVoiceChannel({
     channelId,
     guildId: interaction.guild?.id as string,
-    adapterCreator: interaction.guild?.voiceAdapterCreator!,
+    adapterCreator: interaction.guild.voiceAdapterCreator,
     group: 'client',
   });
 
@@ -31,9 +33,7 @@ export const turtles = async (interaction: CommandInteraction) => {
       noSubscriber: NoSubscriberBehavior.Pause,
     },
   });
-  const resource = createAudioResource(
-    `${process.cwd()}/assets/sound/where-are-the-turtles.mp3`,
-  );
+  const resource = createAudioResource(`${process.cwd()}/assets/sound/where-are-the-turtles.mp3`);
 
   player.play(resource);
   connection.subscribe(player);

@@ -3,11 +3,11 @@ import { prisma } from '../..';
 import { Conversions } from '../../utils/conversions';
 
 export const level = async (interaction: CommandInteraction) => {
-  const guildID = interaction.guild?.id as string;
-  const userID = interaction.user.id;
+  const guildId = interaction.guild?.id as string;
+  const userId = interaction.user.id;
 
   const member = await prisma.guildMember.findUnique({
-    where: { guildID_userID: { guildID, userID } },
+    where: { guildId_userId: { guildId, userId } },
   });
 
   if (!member) {
@@ -16,7 +16,7 @@ export const level = async (interaction: CommandInteraction) => {
 
   const connections = await prisma.connection.findMany({
     where: {
-      guildMemberID: member.id,
+      guildMemberId: member.id,
     },
   });
 
@@ -36,12 +36,10 @@ export const level = async (interaction: CommandInteraction) => {
   return interaction.reply(
     `You have been active for ${
       Math.round(hoursActive * 100) / 100 // round to 2 decimal places
-    } hours, you will reach level ${
-      currentLevel + 1
-    } (${Conversions.LEVEL_TO_HOURS(currentLevel + 1)} hours) in ${
-      Math.round(
-        (Conversions.LEVEL_TO_HOURS(currentLevel + 1) - hoursActive) * 100,
-      ) / 100
+    } hours, you will reach level ${currentLevel + 1} (${Conversions.LEVEL_TO_HOURS(
+      currentLevel + 1,
+    )} hours) in ${
+      Math.round((Conversions.LEVEL_TO_HOURS(currentLevel + 1) - hoursActive) * 100) / 100
     } hours.`,
   );
 };

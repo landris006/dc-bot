@@ -5,11 +5,11 @@ export const channelUpdate = async (channel: NonThreadGuildBasedChannel) => {
   if (channel.isVoiceBased()) {
     await prisma.voiceChannel.upsert({
       where: { id: channel.id },
-      update: { name: channel.name, guildID: channel.guild.id },
+      update: { name: channel.name, guildId: channel.guild.id },
       create: {
         id: channel.id,
         name: channel.name,
-        guildID: channel.guild.id,
+        guildId: channel.guild.id,
       },
     });
 
@@ -19,11 +19,11 @@ export const channelUpdate = async (channel: NonThreadGuildBasedChannel) => {
   if (channel.isTextBased()) {
     await prisma.textChannel.upsert({
       where: { id: channel.id },
-      update: { name: channel.name, guildID: channel.guild.id },
+      update: { name: channel.name, guildId: channel.guild.id },
       create: {
         id: channel.id,
         name: channel.name,
-        guildID: channel.guild.id,
+        guildId: channel.guild.id,
       },
     });
 

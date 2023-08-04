@@ -3,10 +3,7 @@ import { VoiceState } from 'discord.js';
 import { Conversions } from '../../utils/conversions';
 import { logger } from '../../utils/logger';
 
-export const disconnection = async (
-  oldState: VoiceState,
-  oldChannelName: string,
-) => {
+export const disconnection = async (oldState: VoiceState, oldChannelName: string) => {
   const member = oldState.member;
   const channel = oldState.channel;
   if (!member || !channel) {
@@ -14,7 +11,7 @@ export const disconnection = async (
   }
 
   const guildMember = await prisma.guildMember.findFirst({
-    where: { guildID: oldState.guild.id, userID: member.user.id },
+    where: { guildId: oldState.guild.id, userId: member.user.id },
   });
   if (!guildMember) {
     return;
@@ -22,8 +19,8 @@ export const disconnection = async (
 
   const openConnections = await prisma.connection.findMany({
     where: {
-      guildMemberID: guildMember.id,
-      voiceChannelID: channel.id,
+      guildMemberId: guildMember.id,
+      voiceChannelId: channel.id,
       endTime: null,
     },
   });
@@ -35,8 +32,8 @@ export const disconnection = async (
   if (openConnections.length > 1) {
     return prisma.connection.deleteMany({
       where: {
-        guildMemberID: guildMember.id,
-        voiceChannelID: channel.id,
+        guildMemberId: guildMember.id,
+        voiceChannelId: channel.id,
         endTime: null,
       },
     });
@@ -51,8 +48,7 @@ export const disconnection = async (
     },
   });
 
-  const timeSpent =
-    connection.endTime!.getTime() - connection.startTime.getTime();
+  const timeSpent = connection.endTime!.getTime() - connection.startTime.getTime();
 
   await logger(
     `${oldState.member?.nickname} left '${oldChannelName}' after: ${
@@ -62,7 +58,7 @@ export const disconnection = async (
 
   const connections = await prisma.connection.findMany({
     where: {
-      guildMemberID: guildMember.id,
+      guildMemberId: guildMember.id,
     },
   });
 
@@ -75,13 +71,9 @@ export const disconnection = async (
     return total + (endTime.getTime() - startTime.getTime());
   }, 0);
 
-  const level = Conversions.HOURS_TO_LEVEL(
-    totalTimeSpent * Conversions.MILISECONDS_TO_HOURS,
-  );
+  const level = Conversions.HOURS_TO_LEVEL(totalTimeSpent * Conversions.MILISECONDS_TO_HOURS);
 
-  let roleForLevel = oldState.guild.roles.cache.find(
-    (role) => role.name === `Level ${level}`,
-  );
+  let roleForLevel = oldState.guild.roles.cache.find((role) => role.name === `Level ${level}`);
 
   if (!roleForLevel) {
     roleForLevel = await oldState.guild.roles.create({
