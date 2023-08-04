@@ -32,7 +32,7 @@ export interface ClientState {
   isPlayingMinecraft: string | null;
 }
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 export const io = new Server(+PORT, {
   cors: {
     origin: process.env.CORS_URL,
