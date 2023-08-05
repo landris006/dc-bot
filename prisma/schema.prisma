@@ -14,8 +14,23 @@ model User {
   avatarUrl String? @map("avatar_url")
 
   guildMembers GuildMember[]
+  activities   Activity[]
 
   @@map("user")
+}
+
+model Activity {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  type      Int
+  name      String
+  iconUrl   String?   @map("icon_url")
+  startTime DateTime  @default(now()) @map("start_time")
+  endTime   DateTime? @map("end_time")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("activity")
 }
 
 model Guild {

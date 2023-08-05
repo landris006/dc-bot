@@ -48,6 +48,12 @@ export const startup = async () => {
         },
       });
 
+      await prisma.activity.deleteMany({
+        where: {
+          endTime: null,
+        },
+      });
+
       const voiceChannels = await guild.channels.fetch();
       return Promise.all(
         voiceChannels.map(async (channel) => {

@@ -7,6 +7,7 @@ import { guildMemberUpdate } from '../handlers/updateHandlers/guildMemberUpdate'
 import { channelStatusUpdate } from '../handlers/voiceStateHandlers/channelStatusUpdate';
 import { interactionRouter } from './interaction';
 import { voiceStateRouter } from './voiceState';
+import { onPresenceUpdate } from '../handlers/presence';
 
 export const eventRouter = (
   client: Client & {
@@ -17,8 +18,9 @@ export const eventRouter = (
   client.on(Events.GuildCreate, startup);
   client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     await voiceStateRouter(oldState, newState);
-    await channelStatusUpdate(newState);
+    return channelStatusUpdate(newState);
   });
+  client.on(Events.PresenceUpdate, async (_, newPresence) => onPresenceUpdate(newPresence));
   client.on(Events.InteractionCreate, interactionRouter);
   client.on(Events.MessageCreate, messageHandler);
   client.on(Events.ChannelCreate, channelUpdate);
@@ -27,10 +29,8 @@ export const eventRouter = (
       return;
     }
 
-    channelUpdate(newChannel);
+    return channelUpdate(newChannel);
   });
   client.on(Events.GuildMemberAdd, guildMemberUpdate);
-  client.on(Events.GuildMemberUpdate, (_, newMember) => {
-    guildMemberUpdate(newMember);
-  });
+  client.on(Events.GuildMemberUpdate, (_, newMember) => guildMemberUpdate(newMember));
 };

@@ -4,7 +4,7 @@ export const logger = async (message: string) => {
   const files = await fs.readdir(process.cwd());
   const logFile = files.find((file) => file === '.log');
 
-  const log = `[${new Date().toLocaleString()}]
+  const log = `[${new Date().toString()}]
   ${message}`;
 
   console.log(log);
