@@ -23,6 +23,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.2",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "concurrently": "^7.6.0",
