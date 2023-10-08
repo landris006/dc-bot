@@ -51,7 +51,7 @@ model GuildMember {
   guildId  String   @map("guild_id")
   userId   String   @map("user_id")
   joinedAt DateTime @map("joined_at")
-  nickname String?
+  nickname String
 
   user        User         @relation(fields: [userId], references: [id])
   guild       Guild        @relation(fields: [guildId], references: [id])
