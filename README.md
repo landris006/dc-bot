@@ -4,7 +4,7 @@
 
 - Main feature: assigning level roles (more like a badges) to members based on activity. For example, if you've been active (active means you are in a voice channel) for e.g. 10 hours in total, the bot will give you a role like this: <br>
   ![Example level role](/assets/images/example_level.png)
-- A couple random commands, mainly based around memes:
+- A couple random commands:
   - `/ping`
   - `/banish`
   - `/level`
