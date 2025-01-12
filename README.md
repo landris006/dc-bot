@@ -1,16 +1,7 @@
-<h1 align="center">Simple Discord bot</h1>
+<h1 align="center">Activity tracking Discord bot</h1>
 
-## Features:
+Records user activity such as time spent connected, time spent doing activities, number of messages, etc. Assigns roles (Level 1, Level 2, etc.) to users based on time spent connected (similar to some TeamSpeak servers).
 
-- Main feature: assigning level roles (more like a badges) to members based on activity. For example, if you've been active (active means you are in a voice channel) for e.g. 10 hours in total, the bot will give you a role like this: <br>
-  ![Example level role](/assets/images/example_level.png)
-- A couple random commands:
-  - `/ping`
-  - `/banish`
-  - `/level`
-  - `/turtles`
-  - `/minecraft`
-  - `/leave`
-    <br>
-    (don't question what some of these do)
-- Also has a [dashboard](https://dc-dash.vercel.app/).
+### Caution
+
+**This bot probably breaks Discord ToS and defenetely breaks data protection regulations like GDPR and such. It should only be used on private servers with the consent of the members.**
