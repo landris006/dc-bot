@@ -4,4 +4,4 @@ Records user activity such as time spent connected, time spent doing activities,
 
 ### Caution
 
-**This bot probably breaks Discord ToS and defenetely breaks data protection regulations like GDPR and such. It should only be used on private servers with the consent of the members.**
+**This bot probably breaks Discord ToS and definitely breaks data protection regulations like GDPR and such. It should only be used on private servers with the consent of the members.**
